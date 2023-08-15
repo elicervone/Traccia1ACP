@@ -1,2 +1,2 @@
 # Traccia1ACP
-Repository per l'esame di ACP
+Ricordate di fare **git pull** ogni volta che aprite il progetto _:)_
