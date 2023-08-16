@@ -58,7 +58,7 @@ var main = function () {
                     artisti.forEach(function(ris){
 
                         $content.append($("<h3>").text("NOME: " + ris.nome + " " + ris.cognome));
-                        
+                        //TODO aggiungere altre info
                     });
                 });
                 
@@ -66,9 +66,24 @@ var main = function () {
 
                 $content = $("<p>");
 
+                var pulsante_aggiungi = $("<button>").text("Aggiungi");
+                var pulsante_rimuovi = $("<button>").text("Rimuovi");
+
+                var username_rim = $("<input>");
+
+                var username_agg = $("<input>");
+                var tipo = $("<input>").attr({"type":"radio", "name":"tipo", "value":"classica"});
+                var username_rim = $("<input>");
+                var username_rim = $("<input>");
+                var username_rim = $("<input>");
+                var username_rim = $("<input>");
+                var username_rim = $("<input>");
+                var username_rim = $("<input>");
+                var username_rim = $("<input>");
+
                 $.getJSON("/editArtists", function(ris){
+                    $content.append(tipo);
                     
-                  
                 });
 
             }else if($element.parent().is(":nth-child(4)")) { // "Visualizza Eventi" tab: Mostra tutti gli eventi
