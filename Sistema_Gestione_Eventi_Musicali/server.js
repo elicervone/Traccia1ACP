@@ -4,7 +4,7 @@ var express = require("express"),
     app = express(),
 	id = 0;
 
-app.use(express.static(__dirname));
+app.use(express.static(__dirname + "/agente"));
 
 app.use(express.urlencoded());
 
@@ -18,7 +18,7 @@ var EventSchema = mongoose.Schema({
 		enum : ["ESIBIZIONE", "CONCERTO", "STRUMENTALE"],
 		default: 'ESIBIZIONE'
 	},
-    partecipanti: [{ type: Schema.Types.ObjectId, ref: "ArtistSchema" }], // Riferimenti agli artisti coinvolti nell'evento
+    partecipanti: [{ type: mongoose.Schema.Types.ObjectId, ref: "ArtistSchema" }], // Riferimenti agli artisti coinvolti nell'evento
     giorno: Date,
     location: String,
     costoTotale: Number
@@ -32,7 +32,11 @@ var ArtistSchema = mongoose.Schema({
 		enum : ["CANTANTE", "STRUMENTISTA"],
 		default: 'CANTANTE'
 	},
-	caratteristiche: [ {nome: String, cognome: String, Email: String, telefono: String, cachet: Number} ], //TUTTI
+	nome: String,
+	cognome: String,
+	Email: String,
+	telefono: String,
+	cachet: Number,
     genere: { //SOLO CANTANTI
 		type: [String],
 		enum : ["CLASSICA", "LEGGERA", "POP", "JAZZ", "null"],
@@ -43,8 +47,12 @@ var ArtistSchema = mongoose.Schema({
 		enum : ["SOPRANO", "MEZZOSOPRANO", "CONTRALTO", "TENORE", "BARITONO", "BASSO", "null"],
 		default: 'null'
 	},
-    strumenti: [String] //SOLO STRUMENTISTI
+    strumenti: [String], //SOLO STRUMENTISTI, MAX 4
+	username: String,
+	password: String
 });
+
+//forse va messo uno schema anche per l'admin (agente)
 
 var Artisti = mongoose.model("Artisti", ArtistSchema);
 var Eventi = mongoose.model("Eventi", EventSchema);
@@ -79,3 +87,53 @@ Eventi.find({}, function (err, result){
 http.createServer(app).listen(3000);
 
 //ROTTE
+
+//get a /home
+app.get("/home", function(req, res){
+	console.log("hai fatto get a /home, bravo");
+	
+	Eventi.find(function(err, ris){//query generica per tutti gli eventi
+		console.log(ris);
+		res.json(ris);
+	});
+});
+
+//get a /events
+app.get("/events", function(req, res){
+	console.log("hai fatto get a /events, brav scem");
+
+	Eventi.find(function(err, ris){//query generica per tutti gli eventi
+		console.log(ris);
+		res.json(ris);
+	});
+});
+
+//get a /artists
+app.get("/artists", function(req, res){
+	console.log("hai fatto get a /artists, brav strunz");
+
+	Artisti.find(function(err, ris){//query generica per tutti gli artisti
+		console.log(ris);
+		res.json(ris);
+	});
+});
+
+//get a /events/add
+app.get("/addEvents", function(req, res){
+	console.log("hai fatto get a /addEvents, brav lot");
+
+	Eventi.find(function(err, ris){//query generica per tutti gli eventi
+		console.log(ris);
+		res.json(ris);
+	});
+});
+
+//get a /artists/edit
+app.get("/editArtists", function(req, res){
+	console.log("hai fatto get a /editArtists, brav cul");
+
+	Artisti.find(function(err, ris){//query generica per tutti gli artisti
+		console.log(ris);
+		res.json(ris);
+	});
+});
