@@ -39,6 +39,19 @@ body, h1, h2, h3, p, ul, li {
     padding: 7px;
     border-radius: 10%;
   }
+
+  .sinistra{
+    float: left;
+  }
+
+  .destra{
+    float: right;
+  }
+
+  .colonna{
+    display: block;
+    margin-bottom: 5px;
+  }
   
   /* Aggiungere altro in futuro */
   

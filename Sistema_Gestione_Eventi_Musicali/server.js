@@ -2,7 +2,8 @@ var express = require("express"),
     http = require("http"),
     mongoose = require("mongoose"),
     app = express(),
-	id = 0;
+	idA = 0;
+	idE = 0;
 
 app.use(express.static(__dirname + "/agente"));
 
@@ -66,7 +67,7 @@ Artisti.find({}, function (err, result){
 			max = element.id;
 	});
 
-	id = max;
+	idA = max;
 	console.log("MAX ARTISTI = " + max);
 
 });
@@ -79,7 +80,7 @@ Eventi.find({}, function (err, result){
 			max = element.id;
 	});
 
-	id = max;
+	idE = max;
 	console.log("MAX EVENTI= " + max);
 
 });
@@ -118,7 +119,7 @@ app.get("/artists", function(req, res){
 	});
 });
 
-//get a /events/add
+//get a /addEvents
 app.get("/addEvents", function(req, res){
 	console.log("hai fatto get a /addEvents, brav lot");
 
@@ -128,12 +129,68 @@ app.get("/addEvents", function(req, res){
 	});
 });
 
-//get a /artists/edit
+//get a /editArtists
 app.get("/editArtists", function(req, res){
 	console.log("hai fatto get a /editArtists, brav cul");
 
 	Artisti.find(function(err, ris){//query generica per tutti gli artisti
 		console.log(ris);
 		res.json(ris);
+	});
+});
+
+//post a /editArtists
+app.post("/editArtists", function(req, res){
+	console.log("hai fatto post a /editArtist, brav cul");
+
+	var newArtist = new Artisti({"id":++idA, "tipo":req.body.tipo, "nome":req.body.nome, "cognome":req.body.cognome, "Emal":req.body.Emal, "telefono":req.body.telefono, "cachet":req.body.cachet, "genere":req.body.genere, "registro":req.body.registro, "strumenti":req.body.strumenti, "username":req.body.username, "password":req.body.password});
+
+	newArtist.save(function (err, result) {
+		if (err !== null) {
+			
+			console.log(err);
+			res.send("ERROR1");
+
+		} else {
+			
+			Artisti.find({}, function (err, result) {
+				
+				if (err !== null) {
+			    		
+					console.log(err);
+			    	res.send("ERROR2");
+				}
+			
+				res.json(result);
+			});
+		}
+	});
+});
+
+//post a /addEvents
+app.post("/addEvents", function(req, res){
+	console.log("hai fatto post a /addEvents, brav lot");
+	
+	var newEvent = new Event({"id":++idE,  "tipo":req.body.tipo, "giorno":req.body.giorno, "location":req.body.location, "costo":req.body.costoTotale, "partecipanti":req.body.partecipanti});
+
+	newEvent.save(function (err, result) {
+		if (err !== null) {
+			
+			console.log(err);
+			res.send("ERROR1");
+
+		} else {
+			
+			Eventi.find({}, function (err, result) {
+				
+				if (err !== null) {
+			    		
+					console.log(err);
+			    	res.send("ERROR2");
+				}
+			
+				res.json(result);
+			});
+		}
 	});
 });
