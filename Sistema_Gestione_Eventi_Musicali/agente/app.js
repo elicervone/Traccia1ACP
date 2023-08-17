@@ -227,14 +227,19 @@ var main = function () {
 
                 $content = $("<p>");
 
-                $.getJSON("/events", function(ris){
+                $.getJSON("/events", function(eventi){
                     
-                  
+                    eventi.forEach(function(ris){
+
+                        $content.append($("<h3>").text("EVENTO: " + ris.location + " " + ris.giorno));
+                        //TODO aggiungere altre info
+                    });
                 });
 
             }else if($element.parent().is(":nth-child(5)")) { // "Aggiungi Eventi" tab: Permette di aggiungere degli eventi
 
                 var somma = 0;
+                var partecipano = [];
 
                 $content = $("<p>");
 
@@ -249,9 +254,9 @@ var main = function () {
                 var labeltipo3 = $("<label>Strumentale</label>").attr({"for": "sceltaTipo3"});
 //#endregion
 
-                var giorno = $("<input>");
+                var giorno = $("<input>").attr({"type" : "date"});
                 var location = $("<input>");
-                var costo = $("<h4>");//.val(somma)  [SOMMA DEI CACHET]
+                var costo = $("<h4>");
 
                 var partecipante = $("<input>");
                 var pulsante_partecipante = $("<button>").text("Aggiungi partecipante");
@@ -287,7 +292,7 @@ var main = function () {
                         try {
                             var getTipo = document.querySelector("input[name='tipo']:checked").value;
 
-                            aggiungiEvento();
+                            aggiungiEvento(getTipo, giorno.val(), location.val(), somma, partecipano);
 
                             // Trova tutti gli <input> 
                             const inputElements = document.getElementsByTagName("input");
@@ -311,27 +316,28 @@ var main = function () {
 
                     pulsante_partecipante.on("click", function(){
 
-                        var ris = false;
+                        var ris;
 
                         try {
-                            ris = calcolaCosto(partecipante.val());
+                            aggiungiPartecipante(partecipante.val(), function(artista) {
+
+                                if (artista) {
+                                    somma += artista.paga;
+                                    costo.text(somma);
+                                    partecipano.push(artista.id);
+                                    console.log("Partecipante aggiunto:", artista);
+                                } else {
+                                    alert("Seleziona una persona reale (gli amici immaginari non valgono)");
+                                }
+
+                                partecipante.val("");
+                            });
                         } catch (error) {
                             alert("seleziona qualcosa dai stefano!");
                         }
                         finally
                         {
                             partecipante.val("");
-                        }
-                        
-                        if(ris != false)
-                        {
-                            console.log("tutto ok col partecipante");
-                            somma+=ris;
-                            costo.text(somma);
-                        }
-                        else
-                        {
-                            alert("seleziona una persona reale (gli amici immaginari non valgono)");
                         }
                         
                     });
@@ -381,32 +387,38 @@ var main = function () {
 
     };
 
-    var calcolaCosto = function(userPartecipante){
-
-        $.getJSON("/artists", function(artisti){
-                    
-            artisti.forEach(function(ris){
-
-                if(artisti.username === userPartecipante)
-                {
-                    return artisti.cachet;
+    var aggiungiPartecipante = function(userPartecipante, callback) {
+        $.getJSON("/artists", function(artisti) {
+            var risultato = null;
+    
+            artisti.forEach(function(artista) {
+                if (artista.username === userPartecipante) {
+                    risultato = { id: artista._id, nome: artista.nome, cognome: artista.cognome, paga: artista.cachet };
                 }
             });
-
-            return false;
+    
+            if (risultato !== null) {
+                console.log("Trovato il partecipante");
+                console.log(risultato);
+                callback(risultato);
+            } else {
+                console.log("NON trovato il partecipante");
+                callback(false);
+            }
         });
-
-    }
+    };
 
     var aggiungiEvento = function(getTipo, giorno, location, costo ,partecipanti){
         
         var evento;
             
-        if (giorno!="" && location!=="" && partecipanti!==""){
+        if (giorno!="" && location!=="" && partecipanti.length > 0){
+
+            var evento;
 
             $.getJSON("/addEvents", function (element){
 
-                artista = {"id":-1, "tipo":getTipo, "giorno":giorno, "location":location, "costoTotale":costo, "partecipanti":partecipanti};
+                evento = {"id":-1, "tipo":getTipo, "giorno":giorno, "location":location, "costoTotale":costo, "partecipanti":partecipanti};
 
                 // Make an HTTP POST to create the new artist
                 $.post("/addEvents", evento, function (result) {
@@ -420,7 +432,7 @@ var main = function () {
         } else {
 
             alert("Per cortesia, scrivi le cose");
-
+            console.log(partecipanti.length);
         }
 
     }; 

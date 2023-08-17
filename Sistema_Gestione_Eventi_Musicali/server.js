@@ -171,7 +171,7 @@ app.post("/editArtists", function(req, res){
 app.post("/addEvents", function(req, res){
 	console.log("hai fatto post a /addEvents, brav lot");
 	
-	var newEvent = new Event({"id":++idE,  "tipo":req.body.tipo, "giorno":req.body.giorno, "location":req.body.location, "costo":req.body.costoTotale, "partecipanti":req.body.partecipanti});
+	var newEvent = new Eventi({"id":++idE,  "tipo":req.body.tipo, "giorno":req.body.giorno, "location":req.body.location, "costo":req.body.costoTotale, "partecipanti":req.body.partecipanti});
 
 	newEvent.save(function (err, result) {
 		if (err !== null) {
