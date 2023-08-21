@@ -13,7 +13,7 @@ var main = function () {
             $element.addClass("active");
             $("main .content").empty();
 
-            if ($element.parent().is(":nth-child(1)")) { // "Home" tab: Una pagina a caso, magari il login per gli artisti
+            if ($element.parent().is(":nth-child(1)")) { // "Home" tab: Una pagina a caso, magari il login per gli artisti [Tutti]
                 $content = $("<p>");
 
                 var input_user = $("<input>");
@@ -49,7 +49,7 @@ var main = function () {
                    
                 });
 
-            } else if ($element.parent().is(":nth-child(2)")) { // "Visualizza Artisti" tab: Mostra tutti gli artisti
+            } else if ($element.parent().is(":nth-child(2)")) { // "Visualizza Artisti" tab: Mostra tutti gli artisti [Tutti?]
                 
                 $content = $("<p>");
 
@@ -62,7 +62,7 @@ var main = function () {
                     });
                 });
                 
-            } else if ($element.parent().is(":nth-child(3)")) { // "Modifica Artisti" tab: Permette di aggiungere e rimuovere gli artisti
+            } else if ($element.parent().is(":nth-child(3)")) { // "Modifica Artisti" tab: Permette di aggiungere e rimuovere gli artisti [LISA]
 
                 $content = $("<p>");
 
@@ -71,14 +71,14 @@ var main = function () {
 
                 var username_rim = $("<input>").addClass("destra").addClass("colonna");
                 var username_agg = $("<input>");
-//#region TIPO
+                //#region TIPO
                 var tipo1 = $("<input>").attr({"type":"radio", "name":"tipo", "value":"CANTANTE", "id":"sceltaTipo1"});
                 var labeltipo1 = $("<label>Cantante</label>").attr({"for": "sceltaTipo1"});
                 var tipo2 = $("<input>").attr({"type":"radio", "name":"tipo", "value":"STRUMENTISTA", "id":"sceltaTipo2"});
                 var labeltipo2 = $("<label>Strumentista</label>").attr({"for": "sceltaTipo2"});
-//#endregion
+                //#endregion
 
-//#region GENERE
+                //#region GENERE
                 var genere1 = $("<input>").attr({"type":"radio", "name":"genere", "value":"CLASSICA", "id":"sceltaGenere1"});
                 var labelGenere1 = $("<label>Classica</label>").attr({"for": "sceltaGenere1"});
                 var genere2 = $("<input>").attr({"type":"radio", "name":"genere", "value":"LEGGERA", "id":"sceltaGenere2"});
@@ -89,7 +89,7 @@ var main = function () {
                 var labelGenere4 = $("<label>Jazz</label>").attr({"for": "sceltaGenere4"});
                 var genere5 = $("<input>").attr({"type":"radio", "name":"genere", "value":"null", "id":"sceltaGenere5"});
                 var labelGenere5 = $("<label>Nessuno (strumentista)</label>").attr({"for": "sceltaGenere5"});
-//#endregion
+                //#endregion
                 var nome = $("<input>");
                 var cognome = $("<input>");
                 var email = $("<input>");
@@ -97,7 +97,7 @@ var main = function () {
                 var cachet = $("<input>");
                 var password = $("<input>");
 
-//#region REGISTRO
+                //#region REGISTRO
                 var registro1 = $("<input>").attr({"type":"radio", "name":"registro", "value":"SOPRANO", "id":"sceltaRegistro1"});
                 var labelregistro1 = $("<label>Soprano</label>").attr({"for": "sceltaRegistro1"});
                 var registro2 = $("<input>").attr({"type":"radio", "name":"registro", "value":"MEZZOSOPRANO", "id":"sceltaRegistro2"});
@@ -112,7 +112,7 @@ var main = function () {
                 var labelregistro6 = $("<label>Basso</label>").attr({"for": "sceltaRegistro6"});
                 var registro7 = $("<input>").attr({"type":"radio", "name":"registro", "value":"null", "id":"sceltaRegistro7"});
                 var labelregistro7 = $("<label>Nessuno</label>").attr({"for": "sceltaRegistro7"});
-//#endregion
+                //#endregion
                 
                 var strumento1 = $("<input>");
                 var strumento2 = $("<input>");
@@ -121,7 +121,7 @@ var main = function () {
 
 
                 $.getJSON("/editArtists", function(ris){
-//#region append
+                //#region append
                     $content.append(pulsante_rimuovi);
                     $content.append(username_rim);
                     $content.append($("<h3>Username dell'artista da rimuovere</h3>").addClass("destra").addClass("colonna"));
@@ -183,7 +183,7 @@ var main = function () {
 
                     $content.append(pulsante_aggiungi);
 
-//#endregion
+                    //#endregion
 
                     /*pulsante_rimuovi.on("click", function(){
                         ordina(input_nome.val(), input_num.val());
@@ -223,7 +223,7 @@ var main = function () {
                     
                 });
 
-            }else if($element.parent().is(":nth-child(4)")) { // "Visualizza Eventi" tab: Mostra tutti gli eventi
+            }else if($element.parent().is(":nth-child(4)")) { // "Visualizza Eventi" tab: Mostra tutti gli eventi [XDNF]
 
                 $content = $("<p>");
 
@@ -236,7 +236,7 @@ var main = function () {
                     });
                 });
 
-            }else if($element.parent().is(":nth-child(5)")) { // "Aggiungi Eventi" tab: Permette di aggiungere degli eventi
+            }else if($element.parent().is(":nth-child(5)")) { // "Aggiungi Eventi" tab: Permette di aggiungere degli eventi [FALINO]
 
                 var somma = 0;
                 var partecipano = [];
@@ -245,14 +245,14 @@ var main = function () {
 
                 var pulsante_aggiungi = $("<button>").text("Aggiungi");
 
-//#region TIPO
+                //#region TIPO
                 var tipo1 = $("<input>").attr({"type":"radio", "name":"tipo", "value":"ESIBIZIONE", "id":"sceltaTipo1"});
                 var labeltipo1 = $("<label>Esibizione</label>").attr({"for": "sceltaTipo1"});
                 var tipo2 = $("<input>").attr({"type":"radio", "name":"tipo", "value":"CONCERTO", "id":"sceltaTipo2"});
                 var labeltipo2 = $("<label>Concerto</label>").attr({"for": "sceltaTipo2"});
                 var tipo3 = $("<input>").attr({"type":"radio", "name":"tipo", "value":"STRUMENTALE", "id":"sceltaTipo3"});
                 var labeltipo3 = $("<label>Strumentale</label>").attr({"for": "sceltaTipo3"});
-//#endregion
+                //#endregion
 
                 var giorno = $("<input>").attr({"type" : "date"});
                 var location = $("<input>");
@@ -261,8 +261,28 @@ var main = function () {
                 var partecipante = $("<input>");
                 var pulsante_partecipante = $("<button>").text("Aggiungi partecipante");
 
+                //#region eventi ai radio button
+
+                //tutti gli elementi radio con nome "options"
+                const radioButtons = document.getElementsByName("tipo");
+
+                // Aggiungere un gestore per l'evento "change" a ciascun radio button
+                radioButtons.forEach(function(radioButton) {
+                    radioButton.addEventListener("change", function() {
+                        // La selezione è cambiata
+                        if (radioButton.checked) {
+                            somma = 0;
+                            costo.text("");
+                            partecipano = [];//svuota l'array
+                            console.log("Hai cambiato il tipo di evento");
+                        }
+                    });
+                });
+
+                //#endregion
+
                 $.getJSON("/addEvents", function(ris){
-//#region append                    
+                    //#region append                    
                     $content.append($("<h3>Giorno dell'evento</h3>"));
                     $content.append(giorno);
                     $content.append($("<h3>Location dell'evento</h3>"));
@@ -285,9 +305,89 @@ var main = function () {
 
                     $content.append(pulsante_aggiungi);
 
-//#endregion
+                    //#endregion
 
                     pulsante_aggiungi.on("click", function(){
+
+                        //#region vincoli
+                        
+                        var numCantanti = 0;
+                        var numStrument = 0;
+                        var tipoEvento = document.querySelector("input[name='tipo']:checked").value;
+
+                        if(tipoEvento == "ESIBIZIONE")//ESIBIZIONE
+                        {
+                            
+                            partecipano.forEach(element => {
+                                console.log(element.tipo);
+                                if(element.tipo == "CANTANTE")
+                                {
+                                    numCantanti++;
+                                }
+                                else
+                                {
+                                    numStrument++;
+                                }
+                            });
+
+                            console.log("Num cantanti: ", numCantanti, " Num strumenti: ", numStrument);
+
+                            if(numCantanti != 1 || numStrument < 1)
+                            {
+                                alert("Un'esibizione deve avere un singolo cantante, ed uno o più strumentisti");
+                                return;
+                            }
+                        }
+                        else if(tipoEvento == "CONCERTO")//CONCERTO
+                        {
+                            partecipano.forEach(element => {
+                                if(element.tipo == "CANTANTE")
+                                {
+                                    numCantanti++;
+                                }
+                                else
+                                {
+                                    numStrument++;
+                                }
+                            });
+
+                            console.log("Num cantanti: ", numCantanti, " Num strumenti: ", numStrument);
+
+                            if(numCantanti < 1 || numStrument < 1)
+                            {
+                                alert("Un concerto deve avere almeno un cantante, ed uno o più strumentisti");
+                                return;
+                            }
+                        }
+                        else if(tipoEvento == "STRUMENTALE")//STRUMENTALE
+                        {
+                            partecipano.forEach(element => {
+                                if(element.tipo == "CANTANTE")
+                                {
+                                    numCantanti++;
+                                }
+                                else
+                                {
+                                    numStrument++;
+                                }
+                            });
+
+                            console.log("Num cantanti: ", numCantanti, " Num strumenti: ", numStrument);
+
+                            if(numCantanti > 0 || numStrument < 1)
+                            {
+                                alert("Uno strumentale deve avere solo strumentisti");
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            console.log("ERRORE NEL CONTROLLO EVENTO");
+                            return;
+                        }
+
+
+                        //#endregion
 
                         try {
                             var getTipo = document.querySelector("input[name='tipo']:checked").value;
@@ -299,13 +399,19 @@ var main = function () {
 
                             // Utilizza forEach per iterare su ciascun elemento e pulirne il valore
                             Array.from(inputElements).forEach(input => {
-                                input.value = "";
-
                                 if(input.type == "radio")
                                 {
                                     input.checked = false;
                                 }
+                                else
+                                {
+                                    input.value = "";
+                                }
                             });
+
+                            somma = 0;
+                            costo.text("");
+                            partecipano = [];
 
                         } catch (error) {
                             alert("seleziona qualcosa dai stefano!");
@@ -322,10 +428,12 @@ var main = function () {
                             aggiungiPartecipante(partecipante.val(), function(artista) {
 
                                 if (artista) {
+
                                     somma += artista.paga;
                                     costo.text(somma);
-                                    partecipano.push(artista.id);
+                                    partecipano.push(artista);//QUAQUAQUA
                                     console.log("Partecipante aggiunto:", artista);
+
                                 } else {
                                     alert("Seleziona una persona reale (gli amici immaginari non valgono)");
                                 }
@@ -393,7 +501,7 @@ var main = function () {
     
             artisti.forEach(function(artista) {
                 if (artista.username === userPartecipante) {
-                    risultato = { id: artista._id, nome: artista.nome, cognome: artista.cognome, paga: artista.cachet };
+                    risultato = { id: artista._id, nome: artista.nome, cognome: artista.cognome, paga: artista.cachet, tipo: artista.tipo };
                 }
             });
     
@@ -415,10 +523,15 @@ var main = function () {
         if (giorno!="" && location!=="" && partecipanti.length > 0){
 
             var evento;
+            var iddi = [];
+
+            partecipanti.forEach(element => {
+                iddi.push(element.id);
+            });
 
             $.getJSON("/addEvents", function (element){
 
-                evento = {"id":-1, "tipo":getTipo, "giorno":giorno, "location":location, "costoTotale":costo, "partecipanti":partecipanti};
+                evento = {"id":-1, "tipo":getTipo, "giorno":giorno, "location":location, "costoTotale":costo, "partecipanti":iddi};
 
                 // Make an HTTP POST to create the new artist
                 $.post("/addEvents", evento, function (result) {
@@ -432,7 +545,6 @@ var main = function () {
         } else {
 
             alert("Per cortesia, scrivi le cose");
-            console.log(partecipanti.length);
         }
 
     }; 
