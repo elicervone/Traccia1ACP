@@ -52,6 +52,7 @@ var main = function () {
             } else if ($element.parent().is(":nth-child(2)")) { // "Visualizza Artisti" tab: Mostra tutti gli artisti [Tutti?]
                 
                 $content = $("<p>");
+                
 
                 $.getJSON("/artists", function(artisti){
                     

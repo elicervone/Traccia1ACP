@@ -50,7 +50,8 @@ var ArtistSchema = mongoose.Schema({
 	},
     strumenti: [String], //SOLO STRUMENTISTI, MAX 4
 	username: String,
-	password: String
+	password: String,
+	disponibilita: [Date]
 });
 
 //forse va messo uno schema anche per l'admin (agente)
