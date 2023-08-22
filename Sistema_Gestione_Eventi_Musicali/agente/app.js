@@ -20,6 +20,10 @@ var main = function () {
                 var input_pass = $("<input>");
                 var pulsante = $("<button>").text("Login");
 
+                var giorno = $("<input>").attr({"type" : "date"}).addClass("destra");
+                var pulsanteGiorno = $("<button>").text("Aggiungi giorno").addClass("destra");
+                var user;
+
 
                 $.getJSON("/home", function(artisti){
                     
@@ -33,17 +37,26 @@ var main = function () {
     
                     pulsante.on("click", function(){
     
-                        if(input_user.val()!=="" && input_pass.val()!=="")
+                        if(input_user.val()!=="" && input_pass.val()!=="")  
                         {
-                            login(input_user.val(), input_pass.val()); //QUESTA FUNZIONE NON ESISTE (ANCORA)
+                            login(input_user.val(), input_pass.val(), $content, giorno, pulsanteGiorno);
+                            user = input_user.val();
                             input_user.val("");
                             input_pass.val("");
                         }
                         else
                         {
-                            alert("pisello");//TODO
+                            alert("Inserisci username e password perfavore");
                         }
                             
+                    });
+
+                    pulsanteGiorno.on("click", function(){
+
+                       aggiungiGiorno(giorno.val(), user);
+                       giorno.val("");//pulisce
+                       
+
                     });
                     
                    
@@ -52,7 +65,7 @@ var main = function () {
             } else if ($element.parent().is(":nth-child(2)")) { // "Visualizza Artisti" tab: Mostra tutti gli artisti [Tutti?]
                 
                 $content = $("<p>");
-                
+
 
                 $.getJSON("/artists", function(artisti){
                     
@@ -463,8 +476,23 @@ var main = function () {
 
 
 
-    var login = function(){
-        console.log("bel tentativo, pesc");
+    var login = function(username, password, contenuto, g, pg){
+
+        var dati = {user: username, pass: password};
+
+        $.post("/home", dati, function (result) {
+
+            if(result == "OK")
+            {
+                contenuto.append(pg);
+                contenuto.append(g);
+            }
+            else
+            {
+                alert("Username o password errati!");
+            }
+
+        });
     };
 
     var aggiungi_artista = function(username_agg, nome, cognome, email, telefono, cachet, password, getTipo, getGenere, getRegistro, strumento1, strumento2, strumento3, strumento4){
@@ -549,6 +577,43 @@ var main = function () {
         }
 
     }; 
+
+    var aggiungiGiorno = function(giorno, user) {
+        $.getJSON("/artists", function(artisti) {
+            var risultato = [];
+            var id;
+            var bool = false;
+    
+            artisti.forEach(function(artista) {
+                if (artista.username === user) {
+                    risultato = artista.disponibilita;
+                    risultato.push(giorno);
+                    id = artista.id;
+
+                    bool = true;
+                }
+            });
+
+            if(bool)
+            {
+                var risposta = {iddi: id, giorni:risultato};
+            }
+            else
+            {
+                var risposta = {iddi: id, giorni:""};
+            }
+           
+            $.ajax({
+        
+                url: '/artists',
+                type:'PUT',
+                data: risposta,
+                success: function(result){
+                    console.log(result);
+                }
+            });
+        });
+    };
 
     $(".tabs li:nth-child(1) a").trigger("click");
 };

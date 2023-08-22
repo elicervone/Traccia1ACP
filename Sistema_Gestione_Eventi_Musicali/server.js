@@ -94,7 +94,7 @@ http.createServer(app).listen(3000);
 app.get("/home", function(req, res){
 	console.log("hai fatto get a /home, bravo");
 	
-	Eventi.find(function(err, ris){//query generica per tutti gli eventi
+	Artisti.find(function(err, ris){//query generica per tutti gli eventi
 		console.log(ris);
 		res.json(ris);
 	});
@@ -194,4 +194,58 @@ app.post("/addEvents", function(req, res){
 			});
 		}
 	});
+});
+
+//post a /home
+app.post("/home", function(req, res){
+	console.log("hai fatto post a /home, bravo");
+
+	var dati = {user:req.body.user, pass:req.body.pass}
+	
+	Artisti.find({"username": dati.user},function(err, ris){//query generica per tutti gli eventi
+
+		ris.forEach(element => {
+			
+			if(element.password === dati.pass)
+			{
+				res.send("OK");
+			}
+			else
+			{
+				res.send("ERRORE");
+			}
+
+		});
+		console.log("OOOOO");
+	});
+});
+
+//put a /artists
+app.put("/artists", function (req, res) {
+
+	var giorniNuovi = req.body.giorni;
+	var iddi = req.body.iddi;
+	
+	Artisti.find({"id": iddi}, function (err, risultato) {
+		risultato.forEach(element => {
+			
+			// update status
+			element.disponibilita = giorniNuovi;
+
+			// update order with .save to trigger schema validation
+			element.save(function (err) {
+				if (err){
+					console.log(err)
+					res.send("ERROR");
+				}
+				else{
+					console.log("GIORNI AGGIORNATI");
+				}
+				
+			});
+		});
+		
+		
+    });
+
 });
