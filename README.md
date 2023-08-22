@@ -8,6 +8,4 @@ Express è installato
 
 Installatevi node.js sul pc, e mongoDB community edition altrimenti non potete runnare.
 
-Mavco Pisellonio
-sisisi
 
