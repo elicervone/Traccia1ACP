@@ -253,21 +253,20 @@ app.put("/artists", function (req, res) {
 app.delete("/editArtists", function(req, res){
 	console.log("hai fatto delete a /editArtist, brav cul");
 
-	if(req.body.id == "ELIMINA")
-	{
-		Artisti.find({"username":req.body.username}, function (err, result) {
-					
-			if (err !== null) {
-					
-				console.log(err);
-				res.send("ERROR3");
-			}
-		
-			Artisti.deleteOne({username: req.body.username});			
-		});
-	}
-	else
-	{
-		res.send("ERROR4");
-	}
+	Artisti.find({"username": req.body.username}, function (err, risultato) {
+		risultato.forEach(element => {
+			
+			element.deleteOne(function (err) {
+				if (err){
+					console.log(err)
+					res.send("ERROR3");
+				}
+				else{
+					console.log("ARTISTA ELIMINATO");
+					res.send(risultato);
+				}
+				
+			});
+		});	
+	});
 });

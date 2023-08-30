@@ -581,11 +581,12 @@ var main = function () {
 
             $.getJSON("/editArtists", function (element){
 
+                var k = false;
                 element.forEach(e => {
-                    console.log("ue");
                     if(e.username == username_rim)
                     {
-                        artista = {"id":"ELIMINA", "username":username_rim};
+                        console.log("trovato" + e.username);
+                        artista = {"id":-99, "username":username_rim};
 
                         // Make an HTTP POST to create the new artist (ciaone fratm)
                         $.ajax({
@@ -597,13 +598,19 @@ var main = function () {
                                 console.log(result);
                             }
                         });
-
+                        k = true;
                         return;
                     }
                 });
-
-                alert("L'artista non è presente nel database");
-                return;                
+                
+                if(k)
+                {
+                    return;
+                }
+                else
+                {
+                    alert("L'artista non è presente nel DB");
+                }
             });
 
         } else {
