@@ -146,26 +146,26 @@ app.post("/editArtists", function(req, res){
 
 	var newArtist = new Artisti({"id":++idA, "tipo":req.body.tipo, "nome":req.body.nome, "cognome":req.body.cognome, "Emal":req.body.Emal, "telefono":req.body.telefono, "cachet":req.body.cachet, "genere":req.body.genere, "registro":req.body.registro, "strumenti":req.body.strumenti, "username":req.body.username, "password":req.body.password});
 
-	newArtist.save(function (err, result) {
-		if (err !== null) {
-			
-			console.log(err);
-			res.send("ERROR1");
-
-		} else {
-			
-			Artisti.find({}, function (err, result) {
+		newArtist.save(function (err, result) {
+			if (err !== null) {
 				
-				if (err !== null) {
-			    		
-					console.log(err);
-			    	res.send("ERROR2");
-				}
-			
-				res.json(result);
-			});
-		}
-	});
+				console.log(err);
+				res.send("ERROR1");
+
+			} else {
+				
+				Artisti.find({}, function (err, result) {
+					
+					if (err !== null) {
+							
+						console.log(err);
+						res.send("ERROR2");
+					}
+				
+					res.json(result);
+				});
+			}
+		});
 });
 
 //post a /addEvents
@@ -248,4 +248,26 @@ app.put("/artists", function (req, res) {
 		
     });
 
+});
+
+app.delete("/editArtists", function(req, res){
+	console.log("hai fatto delete a /editArtist, brav cul");
+
+	if(req.body.id == "ELIMINA")
+	{
+		Artisti.find({"username":req.body.username}, function (err, result) {
+					
+			if (err !== null) {
+					
+				console.log(err);
+				res.send("ERROR3");
+			}
+		
+			Artisti.deleteOne({username: req.body.username});			
+		});
+	}
+	else
+	{
+		res.send("ERROR4");
+	}
 });

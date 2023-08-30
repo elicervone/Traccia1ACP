@@ -199,19 +199,58 @@ var main = function () {
 
                     //#endregion
 
-                    /*pulsante_rimuovi.on("click", function(){
-                        ordina(input_nome.val(), input_num.val());
-                        input_nome.val("");
-                        input_num.val("");
-                    });*/
+                    pulsante_rimuovi.on("click", function(){
+                        rimuovi_artista(username_rim.val());
+                        username_rim.val("");
+                    });
 
 
                     pulsante_aggiungi.on("click", function(){
-
                         try {
                             var getTipo = document.querySelector("input[name='tipo']:checked").value;
                             var getGenere = document.querySelector('input[name="genere"]:checked').value;
                             var getRegistro = document.querySelector('input[name="registro"]:checked').value;
+
+                            if(getTipo == "STRUMENTISTA")
+                            {
+                                if(getGenere != "null" || getRegistro != "null")
+                                {
+                                    alert("Lo strumentista non può avere un genere o un registro");
+                                    return;
+                                }
+
+                                if(strumento1.val() == "" && strumento2.val() == "" && strumento3.val() == "" && strumento4.val() == "")
+                                {
+                                    alert("Lo strumentista deve avere almeno uno strumento");
+                                    return;
+                                }
+                            }
+                            else if(getTipo == "CANTANTE")
+                            {
+                                if(getGenere != "CLASSICA" && getRegistro != "null")
+                                {
+                                    alert("Solo un cantante classico può avere un registro");
+                                    return;
+                                }
+
+                                if(getGenere == "null")
+                                {
+                                    alert("Il cantante deve avere un genere");
+                                    return;   
+                                }
+
+                                if(getGenere == "CLASSICA" && getRegistro == "null")
+                                {
+                                    alert("Il cantante classico deve avere un registro");
+                                    return;
+                                }
+
+                                if(strumento1.val() != "" || strumento2.val() != "" || strumento3.val() != "" || strumento4.val() != "")
+                                {
+                                    alert("Solo lo strumentista può avere uno strumento");
+                                    return;
+                                }
+                            }
 
                             aggiungi_artista(username_agg.val(), nome.val(), cognome.val(), email.val(), telefono.val(), cachet.val(), password.val(), getTipo, getGenere, getRegistro, strumento1.val(), strumento2.val(), strumento3.val(), strumento4.val());
 
@@ -507,6 +546,14 @@ var main = function () {
 
             $.getJSON("/editArtists", function (element){
 
+                element.forEach(e => {
+                    if(e.username == username_agg)
+                    {
+                        alert("OOOO");
+                        return;
+                    }
+                });
+
                 artista = {"id":-1, "tipo":getTipo, "nome":nome, "cognome":cognome, "Emal":email, "telefono":telefono, "cachet":cachet, "genere":getGenere, "registro":getRegistro, "strumenti":strumenti, "username":username_agg, "password":password};
 
                 // Make an HTTP POST to create the new artist
@@ -516,6 +563,47 @@ var main = function () {
 
                 });
                 
+            });
+
+        } else {
+
+            alert("Per cortesia, scrivi le cose");
+
+        }
+
+    };
+
+    var rimuovi_artista = function(username_rim){
+        
+        var artista;
+            
+        if (username_rim != ""){
+
+            $.getJSON("/editArtists", function (element){
+
+                element.forEach(e => {
+                    console.log("ue");
+                    if(e.username == username_rim)
+                    {
+                        artista = {"id":"ELIMINA", "username":username_rim};
+
+                        // Make an HTTP POST to create the new artist (ciaone fratm)
+                        $.ajax({
+        
+                            url: '/editArtists',
+                            type:'DELETE',
+                            data: artista,
+                            success: function(result){
+                                console.log(result);
+                            }
+                        });
+
+                        return;
+                    }
+                });
+
+                alert("L'artista non è presente nel database");
+                return;                
             });
 
         } else {
