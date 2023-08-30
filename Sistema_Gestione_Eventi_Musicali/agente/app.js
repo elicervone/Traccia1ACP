@@ -220,11 +220,13 @@ var main = function () {
 
                             // Utilizza forEach per iterare su ciascun elemento e pulirne il valore
                             Array.from(inputElements).forEach(input => {
-                                input.value = "";
-
                                 if(input.type == "radio")
                                 {
                                     input.checked = false;
+                                }
+                                else
+                                {
+                                    input.value = "";
                                 }
                             });
 
