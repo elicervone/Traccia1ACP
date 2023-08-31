@@ -95,7 +95,6 @@ app.get("/home", function(req, res){
 	console.log("hai fatto get a /home, bravo");
 	
 	Artisti.find(function(err, ris){//query generica per tutti gli eventi
-		console.log(ris);
 		res.json(ris);
 	});
 });
@@ -105,7 +104,6 @@ app.get("/events", function(req, res){
 	console.log("hai fatto get a /events, brav scem");
 
 	Eventi.find(function(err, ris){//query generica per tutti gli eventi
-		console.log(ris);
 		res.json(ris);
 	});
 });
@@ -115,7 +113,6 @@ app.get("/artists", function(req, res){
 	console.log("hai fatto get a /artists, brav strunz");
 
 	Artisti.find(function(err, ris){//query generica per tutti gli artisti
-		console.log(ris);
 		res.json(ris);
 	});
 });
@@ -125,7 +122,6 @@ app.get("/addEvents", function(req, res){
 	console.log("hai fatto get a /addEvents, brav lot");
 
 	Eventi.find(function(err, ris){//query generica per tutti gli eventi
-		console.log(ris);
 		res.json(ris);
 	});
 });
@@ -135,7 +131,6 @@ app.get("/editArtists", function(req, res){
 	console.log("hai fatto get a /editArtists, brav cul");
 
 	Artisti.find(function(err, ris){//query generica per tutti gli artisti
-		console.log(ris);
 		res.json(ris);
 	});
 });
@@ -200,23 +195,32 @@ app.post("/addEvents", function(req, res){
 app.post("/home", function(req, res){
 	console.log("hai fatto post a /home, bravo");
 
-	var dati = {user:req.body.user, pass:req.body.pass}
+	var datiUser = req.body.user;
+	var datiPass = req.body.pass;
 	
-	Artisti.find({"username": dati.user},function(err, ris){//query generica per tutti gli eventi
+	Artisti.find({"username": datiUser},function(err, ris){//query generica per tutti gli eventi
+		
+		var trovato = false;
 
+		if(err != null)
+		{
+			console.log(err);
+		}
 		ris.forEach(element => {
 			
-			if(element.password === dati.pass)
+			if(element.password == datiPass && trovato == false)
 			{
 				res.send("OK");
+				trovato = true;
+				console.log("Trovata una corrispondenza");
 			}
-			else
-			{
-				res.send("ERRORE");
-			}
-
 		});
-		console.log("OOOOO");
+		
+		if(trovato == false)
+		{
+			res.send("ERRORE");
+			console.log("User o pass sbagliati");
+		}
 	});
 });
 

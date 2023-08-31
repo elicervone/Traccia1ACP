@@ -16,21 +16,24 @@ var main = function () {
             if ($element.parent().is(":nth-child(1)")) { // "Home" tab: Una pagina a caso, magari il login per gli artisti [Tutti]
                 $content = $("<p>");
 
+                var userText = $("<h3>").text("Username:");
+                var passText = $("<h3>").text("Password:");
                 var input_user = $("<input>");
                 var input_pass = $("<input>");
                 var pulsante = $("<button>").text("Login");
+                var pulsanteLogOut = $("<button>").text("Logout");
 
-                var giorno = $("<input>").attr({"type" : "date"}).addClass("destra");
+                var giorno = $("<input>").attr({"type" : "date"}).addClass("destra").addClass("altoSinistra");
                 var pulsanteGiorno = $("<button>").text("Aggiungi giorno").addClass("destra");
                 var user;
 
 
                 $.getJSON("/home", function(artisti){
                     
-                    $content.append($("<h3>").text("Username:"));
+                    $content.append(userText);
                     $content.append(input_user);
     
-                    $content.append($("<h3>").text("Password:"));
+                    $content.append(passText);
                     $content.append(input_pass);
     
                     $content.append(pulsante);
@@ -39,7 +42,19 @@ var main = function () {
     
                         if(input_user.val()!=="" && input_pass.val()!=="")  
                         {
-                            login(input_user.val(), input_pass.val(), $content, giorno, pulsanteGiorno);
+                            login(input_user.val(), input_pass.val(), $content, giorno, pulsanteGiorno, function(ris){
+
+                                if(ris == true)
+                                {
+                                    input_user.remove();
+                                    input_pass.remove();
+                                    pulsante.remove();
+                                    userText.remove();
+                                    passText.remove();
+                                    $content.append(pulsanteLogOut);
+                                }
+
+                            });
                             user = input_user.val();
                             input_user.val("");
                             input_pass.val("");
@@ -59,6 +74,9 @@ var main = function () {
 
                     });
                     
+                    pulsanteLogOut.on("click", function(){
+                        location.reload(true);
+                    });
                    
                 });
 
@@ -517,7 +535,7 @@ var main = function () {
 
 
 
-    var login = function(username, password, contenuto, g, pg){
+    var login = function(username, password, contenuto, g, pg, callback){
 
         var dati = {user: username, pass: password};
 
@@ -527,10 +545,12 @@ var main = function () {
             {
                 contenuto.append(pg);
                 contenuto.append(g);
+                callback(true);
             }
             else
             {
                 alert("Username o password errati!");
+                callback(false);
             }
 
         });

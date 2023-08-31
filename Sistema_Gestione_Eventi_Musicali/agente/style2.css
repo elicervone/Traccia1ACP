@@ -89,6 +89,10 @@ body, h1, h2, h3, p, ul, li {
     margin: 4px 0;
   }
 
+  .centro{
+    float: center;
+  }
+
   .destraInput
   {
     width: auto;
@@ -212,6 +216,12 @@ body, h1, h2, h3, p, ul, li {
   {
     position:  relative;
     top: 20px;
+  }
+
+  .altoSinistra{/*Usato dal giorno nella home*/
+    position: relative;
+    bottom: 5px;
+    right: 15px;
   }
   
   label{
