@@ -80,7 +80,7 @@ var main = function () {
 
                 $content = $("<p>");
 
-                var pulsante_aggiungi = $("<button>").text("Aggiungi");
+                var pulsante_aggiungi = $("<button>").text("Aggiungi").addClass("separazione");
                 var pulsante_rimuovi = $("<button>").text("Rimuovi").addClass("destra").addClass("colonna");
 
                 var username_rim = $("<input>").addClass("destra").addClass("colonna");
@@ -136,9 +136,9 @@ var main = function () {
 
                 $.getJSON("/editArtists", function(ris){
                 //#region append
-                    $content.append(pulsante_rimuovi);
+                    $content.append($("<h3>Username dell'artista da rimuovere</h3>").addClass("destra").addClass("pocoDestra"));
                     $content.append(username_rim);
-                    $content.append($("<h3>Username dell'artista da rimuovere</h3>").addClass("destra").addClass("colonna"));
+                    $content.append(pulsante_rimuovi.addClass("destraInput").addClass("sottoDestra"));
                     
                     $content.append($("<h3>Username dell'artista da aggiungere</h3>"));
                     $content.append(username_agg);
@@ -156,37 +156,37 @@ var main = function () {
                     $content.append(password);
 
                     $content.append($("<h3>L'artista è un</h3>"));
-                    $content.append(tipo1);
+                    $content.append(tipo1.addClass("pocoSotto"));
                     $content.append(labeltipo1);
-                    $content.append(tipo2);
+                    $content.append(tipo2.addClass("pocoSotto"));
                     $content.append(labeltipo2);
 
                     $content.append($("<h3>Indicare il genere del cantante</h3>"));
-                    $content.append(genere1);
+                    $content.append(genere1.addClass("pocoSotto"));
                     $content.append(labelGenere1);
-                    $content.append(genere2);
+                    $content.append(genere2.addClass("pocoSotto"));
                     $content.append(labelGenere2);
-                    $content.append(genere3);
+                    $content.append(genere3.addClass("pocoSotto"));
                     $content.append(labelGenere3);
-                    $content.append(genere4);
+                    $content.append(genere4.addClass("pocoSotto"));
                     $content.append(labelGenere4);
-                    $content.append(genere5);
+                    $content.append(genere5.addClass("pocoSotto"));
                     $content.append(labelGenere5);
 
                     $content.append($("<h3>Indicare il registro del cantante classico</h3>"));
-                    $content.append(registro1);
+                    $content.append(registro1.addClass("pocoSotto"));
                     $content.append(labelregistro1);
-                    $content.append(registro2);
+                    $content.append(registro2.addClass("pocoSotto"));
                     $content.append(labelregistro2);
-                    $content.append(registro3);
+                    $content.append(registro3.addClass("pocoSotto"));
                     $content.append(labelregistro3);
-                    $content.append(registro4);
+                    $content.append(registro4.addClass("pocoSotto"));
                     $content.append(labelregistro4);
-                    $content.append(registro5);
+                    $content.append(registro5.addClass("pocoSotto"));
                     $content.append(labelregistro5);
-                    $content.append(registro6);
+                    $content.append(registro6.addClass("pocoSotto"));
                     $content.append(labelregistro6);
-                    $content.append(registro7);
+                    $content.append(registro7.addClass("pocoSotto"));
                     $content.append(labelregistro7);
 
                     $content.append($("<h3>Indicare gli strumenti conosciuti dallo strumentista</h3>"));
@@ -344,11 +344,11 @@ var main = function () {
                     $content.append(location);
 
                     $content.append($("<h3>L'evento è del tipo</h3>"));
-                    $content.append(tipo1);
+                    $content.append(tipo1.addClass("pocoSotto"));
                     $content.append(labeltipo1);
-                    $content.append(tipo2);
+                    $content.append(tipo2.addClass("pocoSotto"));
                     $content.append(labeltipo2);
-                    $content.append(tipo3);
+                    $content.append(tipo3.addClass("pocoSotto"));
                     $content.append(labeltipo3);
 
                     $content.append($("<h3>I partecipanti sono</h3>"));
