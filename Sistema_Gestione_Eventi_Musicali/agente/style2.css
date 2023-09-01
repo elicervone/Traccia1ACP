@@ -2,11 +2,14 @@
 body, h1, h2, h3, p, ul, li {
     margin: 0;
     padding: 0;
+    font-family: nunito,roboto,proxima-nova,"proxima nova",sans-serif;
+    font-weight: 800;
+
   }
   
   /* Stile del corpo del sito */
   body {
-    font-family: Arial, sans-serif;
+    font-family: nunito,roboto,proxima-nova,"proxima nova",sans-serif;
     background-color: #f0f0f0;
   }
   
@@ -14,7 +17,7 @@ body, h1, h2, h3, p, ul, li {
   header {
     background-color: #3498db;
     color: white;
-    text-shadow: 2px 2px 1px rgba(0, 0, 0, 0.1);
+    text-shadow: 3px 3px 2px rgba(0, 0, 0, 0.492);
     padding: 20px 0;
     text-align: center;
   }
@@ -56,6 +59,7 @@ body, h1, h2, h3, p, ul, li {
     border-radius: 5px;
     padding: 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-family: nunito,roboto,proxima-nova,"proxima nova",sans-serif;
   }
   
   /* Piè di pagina */
@@ -153,6 +157,8 @@ body, h1, h2, h3, p, ul, li {
     margin: 5px;
     padding: .4em;
     color: #FF4742;
+    font-family: nunito,roboto,proxima-nova,"proxima nova",sans-serif;
+    font-weight: 800;
   }
 
   div.radio {
@@ -193,8 +199,10 @@ body, h1, h2, h3, p, ul, li {
     border: .2em solid #FF4742;
     padding: .8em .9em;
     border-radius: 2em;
-    width: 8%;
+    width: 9%;
     color: #FF4742;
+    font-family: nunito,roboto,proxima-nova,"proxima nova",sans-serif;
+    font-weight: 800;
     &::-webkit-datetime-edit-text { color: red; padding: 0 0.3em; }
     &::-webkit-inner-spin-button { display: none; }
     &::-webkit-calendar-picker-indicator {
@@ -234,6 +242,6 @@ body, h1, h2, h3, p, ul, li {
     color: #FF4742;
     position:  relative;
     left: 21px;
-    top: 3px;
+    bottom: 1px;
   }
   

@@ -75,7 +75,8 @@ var main = function () {
                     });
                     
                     pulsanteLogOut.on("click", function(){
-                        location.reload(true);
+                        window.location.reload();
+                        return false;
                     });
                    
                 });
@@ -95,6 +96,7 @@ var main = function () {
 
                     pulsanteGiorno.on("click", function()
                     {   
+                        bool = false;
                         var control = true;
                         $('h3').remove();
                         if(giorno.val() == "")
@@ -111,7 +113,7 @@ var main = function () {
 
                             if(date1 === date2)
                             { 
-                                $content.append($("<h3>").text("NOME: " + ris.nome + " " + ris.cognome));
+                                $content.append($("<h3>").text("|Nome: " + ris.nome + "| |Cognome: " + ris.cognome + "| |Tipo: " + ris.tipo + "| |Cachet: " + ris.cachet + "|"));
                                 bool = true;
                             } 
                             
@@ -122,6 +124,8 @@ var main = function () {
                         giorno.val("");
                         if(!bool && control)
                             alert("Non ci sono artisti disponibili");
+
+                        console.log("Control:"+ control+" Bool:"+ bool);
                     });
                     
                     
