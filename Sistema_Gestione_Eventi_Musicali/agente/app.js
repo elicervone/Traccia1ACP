@@ -96,9 +96,10 @@ var main = function () {
 
                     pulsanteGiorno.on("click", function()
                     {   
+                        $("h4").remove();
+
                         bool = false;
                         var control = true;
-                        $('h3').remove();
                         if(giorno.val() == "")
                         {
                             alert("Inserisci il giorno");
@@ -113,19 +114,33 @@ var main = function () {
 
                             if(date1 === date2)
                             { 
-                                $content.append($("<h3>").text("|Nome: " + ris.nome + "| |Cognome: " + ris.cognome + "| |Tipo: " + ris.tipo + "| |Cachet: " + ris.cachet + "|"));
+                                $content.append($("<h4>").text( ris.tipo+": " + ris.nome + " " + ris.cognome +", cachet: " + ris.cachet));
                                 bool = true;
                             } 
                             
-                            })
+                            });
                             
-                        //TODO aggiungere altre info
-                    });
+                        });
                         giorno.val("");
                         if(!bool && control)
                             alert("Non ci sono artisti disponibili");
 
                         console.log("Control:"+ control+" Bool:"+ bool);
+                    });
+
+                    artisti.forEach(function(ris){
+
+                        var giaStampati= [];
+
+                        ris.disponibilita.forEach(function(ris1){
+
+                            if(!giaStampati.includes(ris.username))
+                            {
+                                $content.append($("<h4>").text( ris.tipo+": " + ris.nome + " " + ris.cognome +", cachet: " + ris.cachet));
+                                giaStampati.push(ris.username); 
+                            }                      
+                        });
+                        
                     });
                     
                     
@@ -341,7 +356,7 @@ var main = function () {
                     
                     eventi.forEach(function(ris){
 
-                        $content.append($("<h3>").text("EVENTO: " + ris.location + " " + ris.giorno));
+                        $content.append($("<h4>").text("EVENTO: " + ris.location + " " + ris.giorno));
                         //TODO aggiungere altre info
                     });
                 });

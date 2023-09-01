@@ -92,7 +92,7 @@ http.createServer(app).listen(3000);
 
 //get a /home
 app.get("/home", function(req, res){
-	console.log("hai fatto get a /home, bravo");
+	console.log("get a /home");
 	
 	Artisti.find(function(err, ris){//query generica per tutti gli eventi
 		res.json(ris);
@@ -101,7 +101,7 @@ app.get("/home", function(req, res){
 
 //get a /events
 app.get("/events", function(req, res){
-	console.log("hai fatto get a /events, brav scem");
+	console.log("get a /events");
 
 	Eventi.find(function(err, ris){//query generica per tutti gli eventi
 		res.json(ris);
@@ -110,7 +110,7 @@ app.get("/events", function(req, res){
 
 //get a /artists
 app.get("/artists", function(req, res){
-	console.log("hai fatto get a /artists, brav strunz");
+	console.log("get a /artists");
 
 	Artisti.find(function(err, ris){//query generica per tutti gli artisti
 		res.json(ris);
@@ -119,7 +119,7 @@ app.get("/artists", function(req, res){
 
 //get a /addEvents
 app.get("/addEvents", function(req, res){
-	console.log("hai fatto get a /addEvents, brav lot");
+	console.log("get a /addEvents");
 
 	Eventi.find(function(err, ris){//query generica per tutti gli eventi
 		res.json(ris);
@@ -128,7 +128,7 @@ app.get("/addEvents", function(req, res){
 
 //get a /editArtists
 app.get("/editArtists", function(req, res){
-	console.log("hai fatto get a /editArtists, brav cul");
+	console.log(" get a /editArtists, brav cul");
 
 	Artisti.find(function(err, ris){//query generica per tutti gli artisti
 		res.json(ris);
@@ -137,7 +137,7 @@ app.get("/editArtists", function(req, res){
 
 //post a /editArtists
 app.post("/editArtists", function(req, res){
-	console.log("hai fatto post a /editArtist, brav cul");
+	console.log("post a /editArtist");
 
 	var newArtist = new Artisti({"id":++idA, "tipo":req.body.tipo, "nome":req.body.nome, "cognome":req.body.cognome, "Emal":req.body.Emal, "telefono":req.body.telefono, "cachet":req.body.cachet, "genere":req.body.genere, "registro":req.body.registro, "strumenti":req.body.strumenti, "username":req.body.username, "password":req.body.password});
 
@@ -165,7 +165,7 @@ app.post("/editArtists", function(req, res){
 
 //post a /addEvents
 app.post("/addEvents", function(req, res){
-	console.log("hai fatto post a /addEvents, brav lot");
+	console.log("post a /addEvents");
 	
 	var newEvent = new Eventi({"id":++idE,  "tipo":req.body.tipo, "giorno":req.body.giorno, "location":req.body.location, "costo":req.body.costoTotale, "partecipanti":req.body.partecipanti});
 
@@ -193,7 +193,7 @@ app.post("/addEvents", function(req, res){
 
 //post a /home
 app.post("/home", function(req, res){
-	console.log("hai fatto post a /home, bravo");
+	console.log("post a /home");
 
 	var datiUser = req.body.user;
 	var datiPass = req.body.pass;
@@ -226,6 +226,7 @@ app.post("/home", function(req, res){
 
 //put a /artists
 app.put("/artists", function (req, res) {
+	console.log("put a /artists");
 
 	var giorniNuovi = req.body.giorni;
 	var iddi = req.body.iddi;
@@ -255,7 +256,7 @@ app.put("/artists", function (req, res) {
 });
 
 app.delete("/editArtists", function(req, res){
-	console.log("hai fatto delete a /editArtist, brav cul");
+	console.log("delete a /editArtis");
 
 	Artisti.find({"username": req.body.username}, function (err, risultato) {
 		risultato.forEach(element => {

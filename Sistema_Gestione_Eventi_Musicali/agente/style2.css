@@ -1,10 +1,9 @@
 /* Reset dei margini e dei padding */
-body, h1, h2, h3, p, ul, li {
+body, h1, h2, h3, h4, p, ul, li {
     margin: 0;
     padding: 0;
     font-family: nunito,roboto,proxima-nova,"proxima nova",sans-serif;
     font-weight: 800;
-
   }
   
   /* Stile del corpo del sito */
@@ -78,6 +77,14 @@ body, h1, h2, h3, p, ul, li {
     color: rgb(36, 36, 36);
     margin-top: 20px;
     font-size: 1.5em;
+    text-shadow: 1.5px 1.5px 1px darkgray;    
+  }
+
+  h4 {
+    color: #000c15;
+    outline: auto;
+    outline-color: #3498db;
+    margin-top: 20px;
     text-shadow: 1.5px 1.5px 1px darkgray;    
   }
 
