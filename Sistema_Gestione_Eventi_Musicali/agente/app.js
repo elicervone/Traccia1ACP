@@ -82,16 +82,49 @@ var main = function () {
 
             } else if ($element.parent().is(":nth-child(2)")) { // "Visualizza Artisti" tab: Mostra tutti gli artisti [Tutti?]
                 
+             
                 $content = $("<p>");
 
-
+                var giorno = $("<input>").attr({"type" : "date"}).addClass("center");
+                var pulsanteGiorno = $("<button>").text("Verifica disponibilità").addClass("destraFill").addClass("center");
+                var bool = false;
+                
                 $.getJSON("/artists", function(artisti){
-                    
-                    artisti.forEach(function(ris){
+                    $content.append(giorno);
+                    $content.append(pulsanteGiorno);
 
-                        $content.append($("<h3>").text("NOME: " + ris.nome + " " + ris.cognome));
+                    pulsanteGiorno.on("click", function()
+                    {   
+                        var control = true;
+                        $('h3').remove();
+                        if(giorno.val() == "")
+                        {
+                            alert("Inserisci il giorno");
+                            control = false;
+                        }
+                            
+                        artisti.forEach(function(ris){
+                            ris.disponibilita.forEach(function(ris1){
+                          
+                           const date1 = new Date(ris1).toLocaleDateString();
+                           const date2 = new Date(giorno.val()).toLocaleDateString();
+
+                            if(date1 === date2)
+                            { 
+                                $content.append($("<h3>").text("NOME: " + ris.nome + " " + ris.cognome));
+                                bool = true;
+                            } 
+                            
+                            })
+                            
                         //TODO aggiungere altre info
                     });
+                        giorno.val("");
+                        if(!bool && control)
+                            alert("Non ci sono artisti disponibili");
+                    });
+                    
+                    
                 });
                 
             } else if ($element.parent().is(":nth-child(3)")) { // "Modifica Artisti" tab: Permette di aggiungere e rimuovere gli artisti [LISA]

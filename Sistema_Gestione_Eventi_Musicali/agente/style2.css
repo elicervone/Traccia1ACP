@@ -89,6 +89,12 @@ body, h1, h2, h3, p, ul, li {
     margin: 4px 0;
   }
 
+  .destraFill{
+    float : right;
+    width :75%;
+    margin : 4px 0;
+  }
+
   .centro{
     float: center;
   }
