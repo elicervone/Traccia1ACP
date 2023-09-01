@@ -1,5 +1,9 @@
+/* Questo file si chiama style2 perchè una volta esisteva style1 */
+/* style1 ha camminato così che style2 potesse volare */
+/* rip style1 */
+
 /* Reset dei margini e dei padding */
-body, h1, h2, h3, h4, p, ul, li {
+body, h1, h2, h3, h4, h5, p, ul, li {
     margin: 0;
     padding: 0;
     font-family: nunito,roboto,proxima-nova,"proxima nova",sans-serif;
@@ -84,8 +88,16 @@ body, h1, h2, h3, h4, p, ul, li {
     color: #000c15;
     outline: auto;
     outline-color: #3498db;
-    margin-top: 20px;
+    padding: 10px;
     text-shadow: 1.5px 1.5px 1px darkgray;    
+  }
+
+  h5 {
+    color: #236e00;
+    outline: auto;
+    outline-color: #e74c3c;
+    padding: 10px;
+    margin-top: 20px;
   }
 
   .sinistra{

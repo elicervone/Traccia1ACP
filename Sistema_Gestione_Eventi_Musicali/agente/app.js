@@ -5,7 +5,6 @@ var main = function () {
     $(".tabs li a").toArray().forEach(function (element) {
         var $element = $(element);
 
-        // create a click handler for this element
         $element.on("click", function () {
             var $content;
 
@@ -13,9 +12,10 @@ var main = function () {
             $element.addClass("active");
             $("main .content").empty();
 
-            if ($element.parent().is(":nth-child(1)")) { // "Home" tab: Una pagina a caso, magari il login per gli artisti [Tutti]
+            if ($element.parent().is(":nth-child(1)")) { // "Home" tab: La pagina per il login e per impostare la disponibilità in una certa data
                 $content = $("<p>");
 
+                //#region variabili
                 var userText = $("<h3>").text("Username:");
                 var passText = $("<h3>").text("Password:");
                 var input_user = $("<input>");
@@ -26,10 +26,11 @@ var main = function () {
                 var giorno = $("<input>").attr({"type" : "date"}).addClass("destra").addClass("altoSinistra");
                 var pulsanteGiorno = $("<button>").text("Aggiungi giorno").addClass("destra");
                 var user;
-
+                //#endregion
 
                 $.getJSON("/home", function(artisti){
                     
+                    //#region append
                     $content.append(userText);
                     $content.append(input_user);
     
@@ -37,7 +38,9 @@ var main = function () {
                     $content.append(input_pass);
     
                     $content.append(pulsante);
-    
+                    //#endregion
+
+                    //Pulsante per il login
                     pulsante.on("click", function(){
     
                         if(input_user.val()!=="" && input_pass.val()!=="")  
@@ -66,34 +69,40 @@ var main = function () {
                             
                     });
 
+                    //Pulsante per aggiungere il giorno
                     pulsanteGiorno.on("click", function(){
 
-                       aggiungiGiorno(giorno.val(), user);
-                       giorno.val("");//pulisce
-                       
-
+                        $("h5").remove();
+                        aggiungiGiorno(giorno.val(), user);
+                        giorno.val("");//pulisce
+                        $content.append($("<h5>Giorno aggiunto</h5>"))
                     });
                     
+                    //Pulsante per il logout
                     pulsanteLogOut.on("click", function(){
-                        window.location.reload();
+                        window.location.reload();//ricarica la pagina
                         return false;
                     });
+
+                    //Attenzione, se si aggiunge un giorno e poi si cerca di visualizzare la disponibilità degli artisti cliccando sulla sezione "visualizza artisti"
+                    //La pagina non caricherà per qualche motivo a me sconosciuto, quindi se possibile dopo aver finito con i giorni, fare il logout grazie :)
                    
                 });
 
-            } else if ($element.parent().is(":nth-child(2)")) { // "Visualizza Artisti" tab: Mostra tutti gli artisti [Tutti?]
-                
-             
+            } else if ($element.parent().is(":nth-child(2)")) { // "Visualizza Artisti" tab: Mostra tutti gli artisti e permette una ricerca per data in base alla disponibilità           
                 $content = $("<p>");
 
+                //#region variabili
                 var giorno = $("<input>").attr({"type" : "date"}).addClass("center");
                 var pulsanteGiorno = $("<button>").text("Verifica disponibilità").addClass("destraFill").addClass("center");
                 var bool = false;
+                //#endregion
                 
                 $.getJSON("/artists", function(artisti){
                     $content.append(giorno);
                     $content.append(pulsanteGiorno);
 
+                    //Cliccando sul pulsante si filtra per giorno di disponibilità
                     pulsanteGiorno.on("click", function()
                     {   
                         $("h4").remove();
@@ -128,6 +137,7 @@ var main = function () {
                         console.log("Control:"+ control+" Bool:"+ bool);
                     });
 
+                    //Se non si filtra appaiono tutti gli artisti nel DB
                     artisti.forEach(function(ris){
 
                         var giaStampati= [];
@@ -146,15 +156,18 @@ var main = function () {
                     
                 });
                 
-            } else if ($element.parent().is(":nth-child(3)")) { // "Modifica Artisti" tab: Permette di aggiungere e rimuovere gli artisti [LISA]
-
+            } else if ($element.parent().is(":nth-child(3)")) { // "Modifica Artisti" tab: Permette di aggiungere e rimuovere gli artisti
                 $content = $("<p>");
 
+                //#region variabili
+                var giaEsiste = false;
                 var pulsante_aggiungi = $("<button>").text("Aggiungi").addClass("separazione");
                 var pulsante_rimuovi = $("<button>").text("Rimuovi").addClass("destra").addClass("colonna");
 
                 var username_rim = $("<input>").addClass("destra").addClass("colonna");
                 var username_agg = $("<input>");
+                //#endregion
+
                 //#region TIPO
                 var tipo1 = $("<input>").attr({"type":"radio", "name":"tipo", "value":"CANTANTE", "id":"sceltaTipo1"});
                 var labeltipo1 = $("<label>Cantante</label>").attr({"for": "sceltaTipo1"});
@@ -174,12 +187,15 @@ var main = function () {
                 var genere5 = $("<input>").attr({"type":"radio", "name":"genere", "value":"null", "id":"sceltaGenere5"});
                 var labelGenere5 = $("<label>Nessuno (strumentista)</label>").attr({"for": "sceltaGenere5"});
                 //#endregion
+                
+                //#region variabili 2
                 var nome = $("<input>");
                 var cognome = $("<input>");
                 var email = $("<input>");
                 var telefono = $("<input>");
                 var cachet = $("<input>");
                 var password = $("<input>");
+                //#endregion
 
                 //#region REGISTRO
                 var registro1 = $("<input>").attr({"type":"radio", "name":"registro", "value":"SOPRANO", "id":"sceltaRegistro1"});
@@ -198,11 +214,12 @@ var main = function () {
                 var labelregistro7 = $("<label>Nessuno</label>").attr({"for": "sceltaRegistro7"});
                 //#endregion
                 
+                //#region variabili 3
                 var strumento1 = $("<input>");
                 var strumento2 = $("<input>");
                 var strumento3 = $("<input>");
                 var strumento4 = $("<input>");
-
+                //#endregion
 
                 $.getJSON("/editArtists", function(ris){
                 //#region append
@@ -269,18 +286,20 @@ var main = function () {
 
                     //#endregion
 
+                    //Rimuove l'artista in base all'username
                     pulsante_rimuovi.on("click", function(){
                         rimuovi_artista(username_rim.val());
                         username_rim.val("");
                     });
 
-
+                    //Aggiunge un artista
                     pulsante_aggiungi.on("click", function(){
                         try {
                             var getTipo = document.querySelector("input[name='tipo']:checked").value;
                             var getGenere = document.querySelector('input[name="genere"]:checked').value;
                             var getRegistro = document.querySelector('input[name="registro"]:checked').value;
 
+                            //#region vincoli
                             if(getTipo == "STRUMENTISTA")
                             {
                                 if(getGenere != "null" || getRegistro != "null")
@@ -322,7 +341,22 @@ var main = function () {
                                 }
                             }
 
-                            aggiungi_artista(username_agg.val(), nome.val(), cognome.val(), email.val(), telefono.val(), cachet.val(), password.val(), getTipo, getGenere, getRegistro, strumento1.val(), strumento2.val(), strumento3.val(), strumento4.val());
+                            ris.forEach(element => {
+                                console.log(element.username)
+                                console.log(username_agg.val())
+                                if (element.username == username_agg.val())
+                                {
+                                    alert("Username già in uso");
+                                    giaEsiste = true;
+                                    return;
+                                } 
+                            });
+                            //#endregion
+
+                            if(giaEsiste == false)
+                            {
+                                aggiungi_artista(username_agg.val(), nome.val(), cognome.val(), email.val(), telefono.val(), cachet.val(), password.val(), getTipo, getGenere, getRegistro, strumento1.val(), strumento2.val(), strumento3.val(), strumento4.val());
+                            }
 
                             // Trova tutti gli <input> 
                             const inputElements = document.getElementsByTagName("input");
@@ -338,9 +372,10 @@ var main = function () {
                                     input.value = "";
                                 }
                             });
+                            giaEsiste = true;
 
                         } catch (error) {
-                            alert("seleziona qualcosa dai stefano!");
+                            alert("Seleziona qualcosa in ogni campo necessario");
                         }
                         
                         
@@ -348,27 +383,25 @@ var main = function () {
                     
                 });
 
-            }else if($element.parent().is(":nth-child(4)")) { // "Visualizza Eventi" tab: Mostra tutti gli eventi [XDNF]
-
+            }else if($element.parent().is(":nth-child(4)")) { // "Visualizza Eventi" tab: Mostra tutti gli eventi
                 $content = $("<p>");
 
                 $.getJSON("/events", function(eventi){
                     
                     eventi.forEach(function(ris){
 
-                        $content.append($("<h4>").text("EVENTO: " + ris.location + " " + ris.giorno));
-                        //TODO aggiungere altre info
+                        $content.append($("<h4>").text(ris.tipo+" in " + ris.location + " il giorno " + ris.giorno));//Eh lo so esce la data completa (ma davvero completa)
                     });
                 });
 
-            }else if($element.parent().is(":nth-child(5)")) { // "Aggiungi Eventi" tab: Permette di aggiungere degli eventi [FALINO]
-
-                var somma = 0;
-                var partecipano = [];
-
+            }else if($element.parent().is(":nth-child(5)")) { // "Aggiungi Eventi" tab: Permette di aggiungere degli eventi
                 $content = $("<p>");
 
+                //#region variabili
+                var somma = 0;
+                var partecipano = [];
                 var pulsante_aggiungi = $("<button>").text("Aggiungi");
+                //#endregion
 
                 //#region TIPO
                 var tipo1 = $("<input>").attr({"type":"radio", "name":"tipo", "value":"ESIBIZIONE", "id":"sceltaTipo1"});
@@ -379,19 +412,21 @@ var main = function () {
                 var labeltipo3 = $("<label>Strumentale</label>").attr({"for": "sceltaTipo3"});
                 //#endregion
 
+                //#region variabili 2
                 var giorno = $("<input>").attr({"type" : "date"});
                 var location = $("<input>");
                 var costo = $("<h4>");
 
                 var partecipante = $("<input>");
                 var pulsante_partecipante = $("<button>").text("Aggiungi partecipante");
+                //#endregion
 
-                //#region eventi ai radio button
+                //#region eventi ai radio button [Legacy]
 
                 //tutti gli elementi radio con nome "options"
                 const radioButtons = document.getElementsByName("tipo");
 
-                // Aggiungere un gestore per l'evento "change" a ciascun radio button
+                //Non penso funzioni questo codice, lo lascio per evitare di rompere qualcosa
                 radioButtons.forEach(function(radioButton) {
                     radioButton.addEventListener("change", function() {
                         // La selezione è cambiata
@@ -425,17 +460,17 @@ var main = function () {
                     $content.append(partecipante);
                     $content.append(pulsante_partecipante);
 
-                    $content.append($("<h3>costo totale dell'evento</h3>"));
+                    $content.append($("<h3>Costo totale dell'evento:</h3>"));
                     $content.append(costo);
 
                     $content.append(pulsante_aggiungi);
 
                     //#endregion
 
+                    //Aggiunge un partecipante all'evento
                     pulsante_aggiungi.on("click", function(){
 
-                        //#region vincoli
-                        
+                        //#region vincoli                       
                         var numCantanti = 0;
                         var numStrument = 0;
                         var tipoEvento = document.querySelector("input[name='tipo']:checked").value;
@@ -510,8 +545,6 @@ var main = function () {
                             console.log("ERRORE NEL CONTROLLO EVENTO");
                             return;
                         }
-
-
                         //#endregion
 
                         try {
@@ -539,7 +572,7 @@ var main = function () {
                             partecipano = [];
 
                         } catch (error) {
-                            alert("seleziona qualcosa dai stefano!");
+                            alert("Seleziona qualcosa in ogni campo necessario");
                         }
                         
                         
@@ -560,13 +593,13 @@ var main = function () {
                                     console.log("Partecipante aggiunto:", artista);
 
                                 } else {
-                                    alert("Seleziona una persona reale (gli amici immaginari non valgono)");
+                                    alert("Seleziona un artista presente nel DB");
                                 }
 
                                 partecipante.val("");
                             });
                         } catch (error) {
-                            alert("seleziona qualcosa dai stefano!");
+                            alert("Compila tutti i campi necessari");
                         }
                         finally
                         {
@@ -574,7 +607,7 @@ var main = function () {
                         }
                         
                     });
-                    
+
                 });
 
             }
@@ -612,23 +645,23 @@ var main = function () {
         var strumenti = [strumento1,strumento2,strumento3,strumento4];
         
         var artista;
-        //nuovoArtista = {"tipo":getTipo, "nome":nome, "cognome":cognome, "Emal":email, "telefono":telefono, "cachet":cachet, "genere":getGenere, "registro":getRegistro, "strumenti":strumenti, "username":username_agg, "password":password};
             
         if (nome!="" && cognome!=="" && email!=="" && telefono!=="" && cachet!=="" && username_agg!=="" && password!==""){
 
             $.getJSON("/editArtists", function (element){
 
                 element.forEach(e => {
+                    //Controllo aggiuntivo che non si inserisca un username gia in uso
                     if(e.username == username_agg)
                     {
-                        alert("OOOO");
+                        alert("Se vedi questo, qualcosa è andato storto nel primo controllo");
                         return;
                     }
                 });
 
                 artista = {"id":-1, "tipo":getTipo, "nome":nome, "cognome":cognome, "Emal":email, "telefono":telefono, "cachet":cachet, "genere":getGenere, "registro":getRegistro, "strumenti":strumenti, "username":username_agg, "password":password};
 
-                // Make an HTTP POST to create the new artist
+                //post per creare l'artista
                 $.post("/editArtists", artista, function (result) {
 
                     console.log(result);
@@ -639,7 +672,7 @@ var main = function () {
 
         } else {
 
-            alert("Per cortesia, scrivi le cose");
+            alert("Seleziona qualcosa in ogni campo necessario");
 
         }
 
@@ -660,7 +693,7 @@ var main = function () {
                         console.log("trovato" + e.username);
                         artista = {"id":-99, "username":username_rim};
 
-                        // Make an HTTP POST to create the new artist (ciaone fratm)
+                        //rip :skullemoji:
                         $.ajax({
         
                             url: '/editArtists',
@@ -671,6 +704,7 @@ var main = function () {
                             }
                         });
                         k = true;
+                        alert("Artista eliminato");
                         return;
                     }
                 });
@@ -687,7 +721,7 @@ var main = function () {
 
         } else {
 
-            alert("Per cortesia, scrivi le cose");
+            alert("Seleziona qualcosa in ogni campo necessario");
 
         }
 
@@ -697,12 +731,14 @@ var main = function () {
         $.getJSON("/artists", function(artisti) {
             var risultato = null;
     
+            //Per aggiungere un partecipante prendo tutti gli artisti ne metto le cose importanti in "risultato"
             artisti.forEach(function(artista) {
                 if (artista.username === userPartecipante) {
                     risultato = { id: artista._id, nome: artista.nome, cognome: artista.cognome, paga: artista.cachet, tipo: artista.tipo };
                 }
             });
     
+            //se risultato non è vuoto, allora lo ritorno con una callback
             if (risultato !== null) {
                 console.log("Trovato il partecipante");
                 console.log(risultato);
@@ -723,6 +759,7 @@ var main = function () {
             var evento;
             var iddi = [];
 
+            //vettore di id di partecipanti (tante I e tante D)
             partecipanti.forEach(element => {
                 iddi.push(element.id);
             });
@@ -731,7 +768,7 @@ var main = function () {
 
                 evento = {"id":-1, "tipo":getTipo, "giorno":giorno, "location":location, "costoTotale":costo, "partecipanti":iddi};
 
-                // Make an HTTP POST to create the new artist
+                //post per aggiungere l'eneto
                 $.post("/addEvents", evento, function (result) {
 
                     console.log(result);
@@ -742,7 +779,7 @@ var main = function () {
 
         } else {
 
-            alert("Per cortesia, scrivi le cose");
+            alert("Seleziona qualcosa in ogni campo necessario");
         }
 
     }; 
@@ -753,6 +790,7 @@ var main = function () {
             var id;
             var bool = false;
     
+            //Prendo tutti gli artisti, seleziono quello loggato con l'username e sovrascrivo i giorni
             artisti.forEach(function(artista) {
                 if (artista.username === user) {
                     risultato = artista.disponibilita;
@@ -772,6 +810,7 @@ var main = function () {
                 var risposta = {iddi: id, giorni:""};
             }
            
+            //put per sovrascrivere i giorni
             $.ajax({
         
                 url: '/artists',

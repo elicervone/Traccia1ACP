@@ -1,3 +1,4 @@
+//#region Informazioni essenziali
 var express = require("express"),
     http = require("http"),
     mongoose = require("mongoose"),
@@ -10,8 +11,10 @@ app.use(express.static(__dirname + "/agente"));
 app.use(express.urlencoded());
 
 mongoose.connect('mongodb://127.0.0.1/Sistema_Gestione_Eventi_Musicali');
+//#endregion
 
-//La forma della "tabella" degli eventi
+//#region Inizializzazione del DB
+//Schema per gli eventi
 var EventSchema = mongoose.Schema({    
     id: Number,
 	tipo: {
@@ -25,10 +28,10 @@ var EventSchema = mongoose.Schema({
     costoTotale: Number
 });
 
-//La forma della "tabella" degli artisti
+//Schema per gli artisti
 var ArtistSchema = mongoose.Schema({    
-    id: Number, //TUTTI PER FORZA
-	tipo: { //TUTTI
+    id: Number,
+	tipo: {
 		type: [String],
 		enum : ["CANTANTE", "STRUMENTISTA"],
 		default: 'CANTANTE'
@@ -38,28 +41,27 @@ var ArtistSchema = mongoose.Schema({
 	Email: String,
 	telefono: String,
 	cachet: Number,
-    genere: { //SOLO CANTANTI
+    genere: {
 		type: [String],
 		enum : ["CLASSICA", "LEGGERA", "POP", "JAZZ", "null"],
 		default: 'null'
 	},
-    registro: { //SOLO CANTANTI CLASSICI
+    registro: {
 		type: [String],
 		enum : ["SOPRANO", "MEZZOSOPRANO", "CONTRALTO", "TENORE", "BARITONO", "BASSO", "null"],
 		default: 'null'
 	},
-    strumenti: [String], //SOLO STRUMENTISTI, MAX 4
+    strumenti: [String],
 	username: String,
 	password: String,
 	disponibilita: [Date]
 });
 
-//forse va messo uno schema anche per l'admin (agente)
-
+//Inizializzo i modelli
 var Artisti = mongoose.model("Artisti", ArtistSchema);
 var Eventi = mongoose.model("Eventi", EventSchema);
 
-//Questi servono per trovare l'id piu piccolo per poi partire da quello per il futuro 
+//Trovo gli id minori, saranno il punto di partenza per gli id futuri
 Artisti.find({}, function (err, result){
 
 	var max = -1;
@@ -73,6 +75,7 @@ Artisti.find({}, function (err, result){
 
 });
 
+//Trovo gli id minori, saranno il punto di partenza per gli id futuri
 Eventi.find({}, function (err, result){
 
 	var max = -1;
@@ -85,7 +88,9 @@ Eventi.find({}, function (err, result){
 	console.log("MAX EVENTI= " + max);
 
 });
+//#endregion
 
+//Avvio il server
 http.createServer(app).listen(3000);
 
 //ROTTE
@@ -128,7 +133,7 @@ app.get("/addEvents", function(req, res){
 
 //get a /editArtists
 app.get("/editArtists", function(req, res){
-	console.log(" get a /editArtists, brav cul");
+	console.log(" get a /editArtists");
 
 	Artisti.find(function(err, ris){//query generica per tutti gli artisti
 		res.json(ris);
@@ -139,6 +144,7 @@ app.get("/editArtists", function(req, res){
 app.post("/editArtists", function(req, res){
 	console.log("post a /editArtist");
 
+	//Creo un nuovo artista e lo salvo nel DB
 	var newArtist = new Artisti({"id":++idA, "tipo":req.body.tipo, "nome":req.body.nome, "cognome":req.body.cognome, "Emal":req.body.Emal, "telefono":req.body.telefono, "cachet":req.body.cachet, "genere":req.body.genere, "registro":req.body.registro, "strumenti":req.body.strumenti, "username":req.body.username, "password":req.body.password});
 
 		newArtist.save(function (err, result) {
@@ -167,6 +173,7 @@ app.post("/editArtists", function(req, res){
 app.post("/addEvents", function(req, res){
 	console.log("post a /addEvents");
 	
+	//Creo un nuovo evento e lo salvo nel DB
 	var newEvent = new Eventi({"id":++idE,  "tipo":req.body.tipo, "giorno":req.body.giorno, "location":req.body.location, "costo":req.body.costoTotale, "partecipanti":req.body.partecipanti});
 
 	newEvent.save(function (err, result) {
@@ -198,7 +205,8 @@ app.post("/home", function(req, res){
 	var datiUser = req.body.user;
 	var datiPass = req.body.pass;
 	
-	Artisti.find({"username": datiUser},function(err, ris){//query generica per tutti gli eventi
+	//Cerco negli artisti in base all'user e controllo la password (dovrebbe essere criptata come abbiamo fatto per ingegneria del soft.)
+	Artisti.find({"username": datiUser},function(err, ris){
 		
 		var trovato = false;
 
@@ -208,6 +216,7 @@ app.post("/home", function(req, res){
 		}
 		ris.forEach(element => {
 			
+			//Trovato
 			if(element.password == datiPass && trovato == false)
 			{
 				res.send("OK");
@@ -216,6 +225,7 @@ app.post("/home", function(req, res){
 			}
 		});
 		
+		//Non trovato
 		if(trovato == false)
 		{
 			res.send("ERRORE");
@@ -231,13 +241,15 @@ app.put("/artists", function (req, res) {
 	var giorniNuovi = req.body.giorni;
 	var iddi = req.body.iddi;
 	
+
 	Artisti.find({"id": iddi}, function (err, risultato) {
 		risultato.forEach(element => {
 			
-			// update status
+			//Aggiorno i giorni con i giorni nuovi e salvo
 			element.disponibilita = giorniNuovi;
 
-			// update order with .save to trigger schema validation
+			//Per qualche motivo questa funzione è incredibilmente lenta, quindi per più salvataggi consecutivi
+			//potrebbe sembrare che non stia funzionando, ma in realtà ci mette un poco a salvare i cambiamenti consecutivi
 			element.save(function (err) {
 				if (err){
 					console.log(err)
@@ -255,9 +267,11 @@ app.put("/artists", function (req, res) {
 
 });
 
+//delete a /editArtists
 app.delete("/editArtists", function(req, res){
-	console.log("delete a /editArtis");
+	console.log("delete a /editArtists");
 
+	//Rimuovo un artista filtrato con l'username
 	Artisti.find({"username": req.body.username}, function (err, risultato) {
 		risultato.forEach(element => {
 			
