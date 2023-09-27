@@ -12,7 +12,7 @@ var main = function () {
             $element.addClass("active");
             $("main .content").empty();
 
-            if ($element.parent().is(":nth-child(1)")) { // "Home" tab: La pagina per il login e per impostare la disponibilità in una certa data
+            if ($element.parent().is(":nth-child(1)")) { // "Home" tab: La pagina per il login con qualche foto ecc...
                 $content = $("<p>");
 
                 //#region variabili
@@ -23,8 +23,6 @@ var main = function () {
                 var pulsante = $("<button>").text("Login");
                 var pulsanteLogOut = $("<button>").text("Logout");
 
-                var giorno = $("<input>").attr({"type" : "date"}).addClass("destra").addClass("altoSinistra");
-                var pulsanteGiorno = $("<button>").text("Aggiungi giorno").addClass("destra");
                 var user;
                 //#endregion
 
@@ -70,13 +68,13 @@ var main = function () {
                     });
 
                     //Pulsante per aggiungere il giorno
-                    pulsanteGiorno.on("click", function(){
+                    /*pulsanteGiorno.on("click", function(){
 
                         $("h5").remove();
                         aggiungiGiorno(giorno.val(), user);
                         giorno.val("");//pulisce
                         $content.append($("<h5>Giorno aggiunto</h5>"))
-                    });
+                    });*/
                     
                     //Pulsante per il logout
                     pulsanteLogOut.on("click", function(){
@@ -86,68 +84,25 @@ var main = function () {
 
                     //Attenzione, se si aggiunge un giorno e poi si cerca di visualizzare la disponibilità degli artisti cliccando sulla sezione "visualizza artisti"
                     //La pagina non caricherà per qualche motivo a me sconosciuto, quindi se possibile dopo aver finito con i giorni, fare il logout grazie :)
-                   
+                 
                 });
-
-            } else if ($element.parent().is(":nth-child(2)")) { // "Visualizza Artisti" tab: Mostra tutti gli artisti e permette una ricerca per data in base alla disponibilità           
+                
+            }else if ($element.parent().is(":nth-child(2)")) { // "Visualizza Testi" tab: Mostra tutti gli artisti e permette una ricerca per data in base alla disponibilità           
                 $content = $("<p>");
 
-                //#region variabili
-                var giorno = $("<input>").attr({"type" : "date"}).addClass("center");
-                var pulsanteGiorno = $("<button>").text("Verifica disponibilità").addClass("destraFill").addClass("center");
-                var bool = false;
-                //#endregion
-                
-                $.getJSON("/artists", function(artisti){
-                    $content.append(giorno);
-                    $content.append(pulsanteGiorno);
-
-                    //Cliccando sul pulsante si filtra per giorno di disponibilità
-                    pulsanteGiorno.on("click", function()
-                    {   
-                        $("h4").remove();
-
-                        bool = false;
-                        var control = true;
-                        if(giorno.val() == "")
-                        {
-                            alert("Inserisci il giorno");
-                            control = false;
-                        }
-                            
-                        artisti.forEach(function(ris){
-                            ris.disponibilita.forEach(function(ris1){
-                          
-                           const date1 = new Date(ris1).toLocaleDateString();
-                           const date2 = new Date(giorno.val()).toLocaleDateString();
-
-                            if(date1 === date2)
-                            { 
-                                $content.append($("<h4>").text( ris.tipo+": " + ris.nome + " " + ris.cognome +", cachet: " + ris.cachet));
-                                bool = true;
-                            } 
-                            
-                            });
-                            
-                        });
-                        giorno.val("");
-                        if(!bool && control)
-                            alert("Non ci sono artisti disponibili");
-
-                        console.log("Control:"+ control+" Bool:"+ bool);
-                    });
+                $.getJSON("/testi", function(testi){
 
                     //Se non si filtra appaiono tutti gli artisti nel DB
-                    artisti.forEach(function(ris){
+                    testi.forEach(function(ris){
 
-                        var giaStampati= [];
+                        var giaStampati = [];
 
                         ris.disponibilita.forEach(function(ris1){
 
-                            if(!giaStampati.includes(ris.username))
+                            if(!giaStampati.includes(ris1.isbn)) //PROBLEMA forse va ris1?
                             {
-                                $content.append($("<h4>").text( ris.tipo+": " + ris.nome + " " + ris.cognome +", cachet: " + ris.cachet));
-                                giaStampati.push(ris.username); 
+                                $content.append($("<h4>").text( ris1.titolo+" |Autore: " + ris1.autore + " |Disponibili: " + ris1.disponibilita +" |Prezzo: " + ris1.prezzo + "€"));
+                                giaStampati.push(ris1.isbn); 
                             }                      
                         });
                         
@@ -156,7 +111,7 @@ var main = function () {
                     
                 });
                 
-            } else if ($element.parent().is(":nth-child(3)")) { // "Modifica Artisti" tab: Permette di aggiungere e rimuovere gli artisti
+            }else if ($element.parent().is(":nth-child(3)")) { // "Modifica Testi" tab: Permette di aggiungere e rimuovere gli artisti
                 $content = $("<p>");
 
                 //#region variabili
@@ -164,143 +119,69 @@ var main = function () {
                 var pulsante_aggiungi = $("<button>").text("Aggiungi").addClass("separazione");
                 var pulsante_rimuovi = $("<button>").text("Rimuovi").addClass("destra").addClass("colonna");
 
-                var username_rim = $("<input>").addClass("destra").addClass("colonna");
-                var username_agg = $("<input>");
+                var isbn_rim = $("<input>").addClass("destra").addClass("colonna");
+                var isbn_agg = $("<input>");
                 //#endregion
 
-                //#region TIPO
-                var tipo1 = $("<input>").attr({"type":"radio", "name":"tipo", "value":"CANTANTE", "id":"sceltaTipo1"});
-                var labeltipo1 = $("<label>Cantante</label>").attr({"for": "sceltaTipo1"});
-                var tipo2 = $("<input>").attr({"type":"radio", "name":"tipo", "value":"STRUMENTISTA", "id":"sceltaTipo2"});
-                var labeltipo2 = $("<label>Strumentista</label>").attr({"for": "sceltaTipo2"});
-                //#endregion
-
-                //#region GENERE
-                var genere1 = $("<input>").attr({"type":"radio", "name":"genere", "value":"CLASSICA", "id":"sceltaGenere1"});
-                var labelGenere1 = $("<label>Classica</label>").attr({"for": "sceltaGenere1"});
-                var genere2 = $("<input>").attr({"type":"radio", "name":"genere", "value":"LEGGERA", "id":"sceltaGenere2"});
-                var labelGenere2 = $("<label>Leggera</label>").attr({"for": "sceltaGenere2"});
-                var genere3 = $("<input>").attr({"type":"radio", "name":"genere", "value":"POP", "id":"sceltaGenere3"});
-                var labelGenere3 = $("<label>Pop</label>").attr({"for": "sceltaGenere3"});
-                var genere4 = $("<input>").attr({"type":"radio", "name":"genere", "value":"JAZZ", "id":"sceltaGenere4"});
-                var labelGenere4 = $("<label>Jazz</label>").attr({"for": "sceltaGenere4"});
-                var genere5 = $("<input>").attr({"type":"radio", "name":"genere", "value":"null", "id":"sceltaGenere5"});
-                var labelGenere5 = $("<label>Nessuno (strumentista)</label>").attr({"for": "sceltaGenere5"});
+                //#region TIPO CARTACEO O DIGITALE
+                var tipo1 = $("<input>").attr({"type":"radio", "name":"tipo", "value":"CARTACEO", "id":"sceltaTipo1"});
+                var labeltipo1 = $("<label>Cartaceo</label>").attr({"for": "sceltaTipo1"});
+                var tipo2 = $("<input>").attr({"type":"radio", "name":"tipo", "value":"DIGITALE", "id":"sceltaTipo2"});
+                var labeltipo2 = $("<label>Digitale</label>").attr({"for": "sceltaTipo2"});
                 //#endregion
                 
                 //#region variabili 2
-                var nome = $("<input>");
-                var cognome = $("<input>");
-                var email = $("<input>");
-                var telefono = $("<input>");
-                var cachet = $("<input>");
-                var password = $("<input>");
+                var titolo = $("<input>");
+                var autori = $("<input>");
+                var editore = $("<input>");
+                var genere = $("<input>");
+                var prezzo = $("<input>");
+                var disponibilita = $("<input>");
                 //#endregion
 
-                //#region REGISTRO
-                var registro1 = $("<input>").attr({"type":"radio", "name":"registro", "value":"SOPRANO", "id":"sceltaRegistro1"});
-                var labelregistro1 = $("<label>Soprano</label>").attr({"for": "sceltaRegistro1"});
-                var registro2 = $("<input>").attr({"type":"radio", "name":"registro", "value":"MEZZOSOPRANO", "id":"sceltaRegistro2"});
-                var labelregistro2 = $("<label>Mezzosoprano</label>").attr({"for": "sceltaRegistro2"});
-                var registro3 = $("<input>").attr({"type":"radio", "name":"registro", "value":"CONTRALTO", "id":"sceltaRegistro3"});
-                var labelregistro3 = $("<label>Contralto</label>").attr({"for": "sceltaRegistro3"});
-                var registro4 = $("<input>").attr({"type":"radio", "name":"registro", "value":"TENORE", "id":"sceltaRegistro4"});
-                var labelregistro4 = $("<label>Tenore</label>").attr({"for": "sceltaRegistro4"});
-                var registro5 = $("<input>").attr({"type":"radio", "name":"registro", "value":"BARITONO", "id":"sceltaRegistro5"});
-                var labelregistro5 = $("<label>Baritono</label>").attr({"for": "sceltaRegistro5"});
-                var registro6 = $("<input>").attr({"type":"radio", "name":"registro", "value":"BASSO", "id":"sceltaRegistro6"});
-                var labelregistro6 = $("<label>Basso</label>").attr({"for": "sceltaRegistro6"});
-                var registro7 = $("<input>").attr({"type":"radio", "name":"registro", "value":"null", "id":"sceltaRegistro7"});
-                var labelregistro7 = $("<label>Nessuno</label>").attr({"for": "sceltaRegistro7"});
-                //#endregion
-                
-                //#region variabili 3
-                var strumento1 = $("<input>");
-                var strumento2 = $("<input>");
-                var strumento3 = $("<input>");
-                var strumento4 = $("<input>");
-                //#endregion
-
-                $.getJSON("/editArtists", function(ris){
+                $.getJSON("/testi", function(ris){
                 //#region append
-                    $content.append($("<h3>Username dell'artista da rimuovere</h3>").addClass("destra").addClass("pocoDestra"));
-                    $content.append(username_rim);
+                    $content.append($("<h3>ISBN del testo da rimuovere</h3>").addClass("destra").addClass("pocoDestra"));
+                    $content.append(isbn_rim);
                     $content.append(pulsante_rimuovi.addClass("destraInput").addClass("sottoDestra"));
                     
-                    $content.append($("<h3>Username dell'artista da aggiungere</h3>"));
-                    $content.append(username_agg);
-                    $content.append($("<h3>Nome</h3>"));
-                    $content.append(nome);
-                    $content.append($("<h3>Cognome</h3>"));
-                    $content.append(cognome);
-                    $content.append($("<h3>Email</h3>"));
-                    $content.append(email);
-                    $content.append($("<h3>Telefono</h3>"));
-                    $content.append(telefono);
-                    $content.append($("<h3>Cachet</h3>"));
-                    $content.append(cachet);
-                    $content.append($("<h3>Password</h3>"));
-                    $content.append(password);
+                    $content.append($("<h3>SBN del testo da aggiungere</h3>"));
+                    $content.append(isbn_agg);
+                    $content.append($("<h3>Titolo</h3>"));
+                    $content.append(titolo);
+                    $content.append($("<h3>autore/i</h3>"));
+                    $content.append(autori);
+                    $content.append($("<h3>Editore</h3>"));
+                    $content.append(editore);
+                    $content.append($("<h3>Genere</h3>"));
+                    $content.append(genere);
+                    $content.append($("<h3>Prezzo</h3>"));
+                    $content.append(prezzo);
+                    $content.append($("<h3>disponibilità</h3>"));
+                    $content.append(disponibilita);
 
-                    $content.append($("<h3>L'artista è un</h3>"));
+                    $content.append($("<h3>Il testo è di tipo</h3>"));
                     $content.append(tipo1.addClass("pocoSotto"));
                     $content.append(labeltipo1);
                     $content.append(tipo2.addClass("pocoSotto"));
                     $content.append(labeltipo2);
 
-                    $content.append($("<h3>Indicare il genere del cantante</h3>"));
-                    $content.append(genere1.addClass("pocoSotto"));
-                    $content.append(labelGenere1);
-                    $content.append(genere2.addClass("pocoSotto"));
-                    $content.append(labelGenere2);
-                    $content.append(genere3.addClass("pocoSotto"));
-                    $content.append(labelGenere3);
-                    $content.append(genere4.addClass("pocoSotto"));
-                    $content.append(labelGenere4);
-                    $content.append(genere5.addClass("pocoSotto"));
-                    $content.append(labelGenere5);
-
-                    $content.append($("<h3>Indicare il registro del cantante classico</h3>"));
-                    $content.append(registro1.addClass("pocoSotto"));
-                    $content.append(labelregistro1);
-                    $content.append(registro2.addClass("pocoSotto"));
-                    $content.append(labelregistro2);
-                    $content.append(registro3.addClass("pocoSotto"));
-                    $content.append(labelregistro3);
-                    $content.append(registro4.addClass("pocoSotto"));
-                    $content.append(labelregistro4);
-                    $content.append(registro5.addClass("pocoSotto"));
-                    $content.append(labelregistro5);
-                    $content.append(registro6.addClass("pocoSotto"));
-                    $content.append(labelregistro6);
-                    $content.append(registro7.addClass("pocoSotto"));
-                    $content.append(labelregistro7);
-
-                    $content.append($("<h3>Indicare gli strumenti conosciuti dallo strumentista</h3>"));
-                    $content.append(strumento1);
-                    $content.append(strumento2);
-                    $content.append(strumento3);
-                    $content.append(strumento4);
-
                     $content.append(pulsante_aggiungi);
-
                     //#endregion
 
-                    //Rimuove l'artista in base all'username
+                    //Rimuove il testo in base all'isbn
                     pulsante_rimuovi.on("click", function(){
-                        rimuovi_artista(username_rim.val());
-                        username_rim.val("");
+                        rimuovi_artista(isbn_rim.val());
+                        isbn_rim.val("");
                     });
 
-                    //Aggiunge un artista
+                    //Aggiunge un testo
                     pulsante_aggiungi.on("click", function(){
                         try {
                             var getTipo = document.querySelector("input[name='tipo']:checked").value;
-                            var getGenere = document.querySelector('input[name="genere"]:checked').value;
-                            var getRegistro = document.querySelector('input[name="registro"]:checked').value;
 
                             //#region vincoli
-                            if(getTipo == "STRUMENTISTA")
+                            /*if(getTipo == "SUMENTTRISTA")
                             {
                                 if(getGenere != "null" || getRegistro != "null")
                                 {
@@ -313,40 +194,14 @@ var main = function () {
                                     alert("Lo strumentista deve avere almeno uno strumento");
                                     return;
                                 }
-                            }
-                            else if(getTipo == "CANTANTE")
-                            {
-                                if(getGenere != "CLASSICA" && getRegistro != "null")
-                                {
-                                    alert("Solo un cantante classico può avere un registro");
-                                    return;
-                                }
-
-                                if(getGenere == "null")
-                                {
-                                    alert("Il cantante deve avere un genere");
-                                    return;   
-                                }
-
-                                if(getGenere == "CLASSICA" && getRegistro == "null")
-                                {
-                                    alert("Il cantante classico deve avere un registro");
-                                    return;
-                                }
-
-                                if(strumento1.val() != "" || strumento2.val() != "" || strumento3.val() != "" || strumento4.val() != "")
-                                {
-                                    alert("Solo lo strumentista può avere uno strumento");
-                                    return;
-                                }
-                            }
+                            }*/
 
                             ris.forEach(element => {
-                                console.log(element.username)
-                                console.log(username_agg.val())
-                                if (element.username == username_agg.val())
+                                console.log(element.isbn)
+                                console.log(isbn_agg.val())
+                                if (element.isbn == isbn_agg.val())
                                 {
-                                    alert("Username già in uso");
+                                    alert("Testo gia registrato");
                                     giaEsiste = true;
                                     return;
                                 } 
@@ -355,7 +210,7 @@ var main = function () {
 
                             if(giaEsiste == false)
                             {
-                                aggiungi_artista(username_agg.val(), nome.val(), cognome.val(), email.val(), telefono.val(), cachet.val(), password.val(), getTipo, getGenere, getRegistro, strumento1.val(), strumento2.val(), strumento3.val(), strumento4.val());
+                                aggiungi_testo(isbn_agg.val(), titolo.val(), autori.val(), editore.val(), genere.val(), prezzo.val(), disponibilita.val(), getTipo);
                             }
 
                             // Trova tutti gli <input> 
@@ -383,10 +238,10 @@ var main = function () {
                     
                 });
 
-            }else if($element.parent().is(":nth-child(4)")) { // "Visualizza Eventi" tab: Mostra tutti gli eventi
+            }else if($element.parent().is(":nth-child(4)")) { // "Visualizza Dipendenti" tab: Mostra tutti gli eventi
                 $content = $("<p>");
 
-                $.getJSON("/events", function(eventi){
+                $.getJSON("/dipendenti", function(eventi){
                     
                     eventi.forEach(function(ris){
 
@@ -610,11 +465,11 @@ var main = function () {
 
                 });
 
-            }
 
             $("main .content").append($content);
 
             return false;
+            }
         });
     });
 
@@ -641,28 +496,27 @@ var main = function () {
         });
     };
 
-    var aggiungi_artista = function(username_agg, nome, cognome, email, telefono, cachet, password, getTipo, getGenere, getRegistro, strumento1, strumento2, strumento3, strumento4){
-        var strumenti = [strumento1,strumento2,strumento3,strumento4];
-        
-        var artista;
-            
-        if (nome!="" && cognome!=="" && email!=="" && telefono!=="" && cachet!=="" && username_agg!=="" && password!==""){
+    var aggiungi_testo = function(isbn_agg, titolo, autori, editore, genere, prezzo, disponibilita, getTipo){
 
-            $.getJSON("/editArtists", function (element){
+        var nuovo_testo;
+            
+        if (titolo!="" && autori!=="" && editore!=="" && genere!=="" && prezzo!=="" && isbn_agg!=="" && disponibilita!==""){
+
+            $.getJSON("/testi", function (element){
 
                 element.forEach(e => {
                     //Controllo aggiuntivo che non si inserisca un username gia in uso
-                    if(e.username == username_agg)
+                    if(e.isbn == isbn_agg)
                     {
                         alert("Se vedi questo, qualcosa è andato storto nel primo controllo");
                         return;
                     }
                 });
 
-                artista = {"id":-1, "tipo":getTipo, "nome":nome, "cognome":cognome, "Emal":email, "telefono":telefono, "cachet":cachet, "genere":getGenere, "registro":getRegistro, "strumenti":strumenti, "username":username_agg, "password":password};
+                nuovo_testo = {"id":-1, "tipo":getTipo, "titolo":titolo, "autori":autori, "editore":editore, "genere":genere, "prezzo":prezzo, "disponibilita":disponibilita, "isbn":isbn_agg};
 
                 //post per creare l'artista
-                $.post("/editArtists", artista, function (result) {
+                $.post("/testi", nuovo_testo, function (result) {
 
                     console.log(result);
 
@@ -672,26 +526,26 @@ var main = function () {
 
         } else {
 
-            alert("Seleziona qualcosa in ogni campo necessario");
+            alert("Riempi tutti i campi necessari");
 
         }
 
     };
 
-    var rimuovi_artista = function(username_rim){
+    var rimuovi_artista = function(isbn_rim){
         
         var artista;
             
-        if (username_rim != ""){
+        if (isbn_rim != ""){
 
             $.getJSON("/editArtists", function (element){
 
                 var k = false;
                 element.forEach(e => {
-                    if(e.username == username_rim)
+                    if(e.username == isbn_rim)
                     {
                         console.log("trovato" + e.username);
-                        artista = {"id":-99, "username":username_rim};
+                        artista = {"id":-99, "username":isbn_rim};
 
                         //rip :skullemoji:
                         $.ajax({

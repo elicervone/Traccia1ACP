@@ -3,66 +3,50 @@ var express = require("express"),
     http = require("http"),
     mongoose = require("mongoose"),
     app = express(),
-	idA = 0;
-	idE = 0;
+	idD = 0;
+	idT = 0;
 
-app.use(express.static(__dirname + "/agente"));
+app.use(express.static(__dirname + "/gestore"));
 
 app.use(express.urlencoded());
 
-mongoose.connect('mongodb://127.0.0.1/Sistema_Gestione_Eventi_Musicali');
+mongoose.connect('mongodb://127.0.0.1/Libreria_Online');
 //#endregion
 
 //#region Inizializzazione del DB
-//Schema per gli eventi
-var EventSchema = mongoose.Schema({    
+//Schema per gli Testi
+var TestiSchema = mongoose.Schema({    
     id: Number,
 	tipo: {
 		type: [String],
-		enum : ["ESIBIZIONE", "CONCERTO", "STRUMENTALE"],
-		default: 'ESIBIZIONE'
+		enum : ["DIGITALE", "CARTACEO"],
+		default: 'CARTACEO'
 	},
-    partecipanti: [{ type: mongoose.Schema.Types.ObjectId, ref: "ArtistSchema" }], // Riferimenti agli artisti coinvolti nell'evento
-    giorno: Date,
-    location: String,
-    costoTotale: Number
+    titolo: String,
+    autori: String,
+    editore: String,
+    genere: String,
+    prezzo: Number,
+	isbn: Number
 });
 
-//Schema per gli artisti
-var ArtistSchema = mongoose.Schema({    
+//Schema per gli Dipendenti
+var DipendentiSchema = mongoose.Schema({    
     id: Number,
-	tipo: {
-		type: [String],
-		enum : ["CANTANTE", "STRUMENTISTA"],
-		default: 'CANTANTE'
-	},
+
 	nome: String,
 	cognome: String,
-	Email: String,
-	telefono: String,
-	cachet: Number,
-    genere: {
-		type: [String],
-		enum : ["CLASSICA", "LEGGERA", "POP", "JAZZ", "null"],
-		default: 'null'
-	},
-    registro: {
-		type: [String],
-		enum : ["SOPRANO", "MEZZOSOPRANO", "CONTRALTO", "TENORE", "BARITONO", "BASSO", "null"],
-		default: 'null'
-	},
-    strumenti: [String],
+
 	username: String,
 	password: String,
-	disponibilita: [Date]
 });
 
 //Inizializzo i modelli
-var Artisti = mongoose.model("Artisti", ArtistSchema);
-var Eventi = mongoose.model("Eventi", EventSchema);
+var Dipendenti = mongoose.model("Dipendenti", DipendentiSchema);
+var Testi = mongoose.model("Testi", TestiSchema);
 
 //Trovo gli id minori, saranno il punto di partenza per gli id futuri
-Artisti.find({}, function (err, result){
+Dipendenti.find({}, function (err, result){
 
 	var max = -1;
 	result.forEach(element => {
@@ -70,13 +54,13 @@ Artisti.find({}, function (err, result){
 			max = element.id;
 	});
 
-	idA = max;
-	console.log("MAX ARTISTI = " + max);
+	idD = max;
+	console.log("MAX Dipendenti = " + max);
 
 });
 
 //Trovo gli id minori, saranno il punto di partenza per gli id futuri
-Eventi.find({}, function (err, result){
+Testi.find({}, function (err, result){
 
 	var max = -1;
 	result.forEach(element => {
@@ -84,8 +68,8 @@ Eventi.find({}, function (err, result){
 			max = element.id;
 	});
 
-	idE = max;
-	console.log("MAX EVENTI= " + max);
+	idT = max;
+	console.log("MAX Testi= " + max);
 
 });
 //#endregion
@@ -99,55 +83,37 @@ http.createServer(app).listen(3000);
 app.get("/home", function(req, res){
 	console.log("get a /home");
 	
-	Artisti.find(function(err, ris){//query generica per tutti gli eventi
+	Dipendenti.find(function(err, ris){//query generica per tutti i Dipendenti
 		res.json(ris);
 	});
 });
 
-//get a /events
-app.get("/events", function(req, res){
-	console.log("get a /events");
+//get a /testi
+app.get("/testi", function(req, res){
+	console.log("get a /testi");
 
-	Eventi.find(function(err, ris){//query generica per tutti gli eventi
+	Testi.find(function(err, ris){//query generica per tutti i Testi
 		res.json(ris);
 	});
 });
 
-//get a /artists
-app.get("/artists", function(req, res){
-	console.log("get a /artists");
+//get a /dipendenti
+app.get("/dipendenti", function(req, res){
+	console.log("get a /dipendenti");
 
-	Artisti.find(function(err, ris){//query generica per tutti gli artisti
+	Dipendenti.find(function(err, ris){//query generica per tutti i Dipendenti
 		res.json(ris);
 	});
 });
 
-//get a /addEvents
-app.get("/addEvents", function(req, res){
-	console.log("get a /addEvents");
-
-	Eventi.find(function(err, ris){//query generica per tutti gli eventi
-		res.json(ris);
-	});
-});
-
-//get a /editArtists
-app.get("/editArtists", function(req, res){
-	console.log(" get a /editArtists");
-
-	Artisti.find(function(err, ris){//query generica per tutti gli artisti
-		res.json(ris);
-	});
-});
-
-//post a /editArtists
-app.post("/editArtists", function(req, res){
-	console.log("post a /editArtist");
+//post a /testi
+app.post("/testi", function(req, res){
+	console.log("post a /testi");
 
 	//Creo un nuovo artista e lo salvo nel DB
-	var newArtist = new Artisti({"id":++idA, "tipo":req.body.tipo, "nome":req.body.nome, "cognome":req.body.cognome, "Emal":req.body.Emal, "telefono":req.body.telefono, "cachet":req.body.cachet, "genere":req.body.genere, "registro":req.body.registro, "strumenti":req.body.strumenti, "username":req.body.username, "password":req.body.password});
+	var nuovo_testo = new Testi({"id":++idD, "tipo":req.body.tipo, "titolo":req.body.titolo, "autori":req.body.autori, "editore":req.body.editore, "genere":req.body.genere, "prezzo":req.body.prezzo, "isbn":req.body.isbn});
 
-		newArtist.save(function (err, result) {
+		nuovo_testo.save(function (err, result) {
 			if (err !== null) {
 				
 				console.log(err);
@@ -155,7 +121,7 @@ app.post("/editArtists", function(req, res){
 
 			} else {
 				
-				Artisti.find({}, function (err, result) {
+				Dipendenti.find({}, function (err, result) {
 					
 					if (err !== null) {
 							
@@ -168,13 +134,13 @@ app.post("/editArtists", function(req, res){
 			}
 		});
 });
-
+/*
 //post a /addEvents
 app.post("/addEvents", function(req, res){
 	console.log("post a /addEvents");
 	
 	//Creo un nuovo evento e lo salvo nel DB
-	var newEvent = new Eventi({"id":++idE,  "tipo":req.body.tipo, "giorno":req.body.giorno, "location":req.body.location, "costo":req.body.costoTotale, "partecipanti":req.body.partecipanti});
+	var newEvent = new Testi({"id":++idT,  "tipo":req.body.tipo, "giorno":req.body.giorno, "location":req.body.location, "costo":req.body.costoTotale, "partecipanti":req.body.partecipanti});
 
 	newEvent.save(function (err, result) {
 		if (err !== null) {
@@ -184,7 +150,7 @@ app.post("/addEvents", function(req, res){
 
 		} else {
 			
-			Eventi.find({}, function (err, result) {
+			Testi.find({}, function (err, result) {
 				
 				if (err !== null) {
 			    		
@@ -205,8 +171,8 @@ app.post("/home", function(req, res){
 	var datiUser = req.body.user;
 	var datiPass = req.body.pass;
 	
-	//Cerco negli artisti in base all'user e controllo la password (dovrebbe essere criptata come abbiamo fatto per ingegneria del soft.)
-	Artisti.find({"username": datiUser},function(err, ris){
+	//Cerco negli Dipendenti in base all'user e controllo la password (dovrebbe essere criptata come abbiamo fatto per ingegneria del soft.)
+	Dipendenti.find({"username": datiUser},function(err, ris){
 		
 		var trovato = false;
 
@@ -242,7 +208,7 @@ app.put("/artists", function (req, res) {
 	var iddi = req.body.iddi;
 	
 
-	Artisti.find({"id": iddi}, function (err, risultato) {
+	Dipendenti.find({"id": iddi}, function (err, risultato) {
 		risultato.forEach(element => {
 			
 			//Aggiorno i giorni con i giorni nuovi e salvo
@@ -272,7 +238,7 @@ app.delete("/editArtists", function(req, res){
 	console.log("delete a /editArtists");
 
 	//Rimuovo un artista filtrato con l'username
-	Artisti.find({"username": req.body.username}, function (err, risultato) {
+	Dipendenti.find({"username": req.body.username}, function (err, risultato) {
 		risultato.forEach(element => {
 			
 			element.deleteOne(function (err) {
@@ -288,4 +254,4 @@ app.delete("/editArtists", function(req, res){
 			});
 		});	
 	});
-});
+});*/
