@@ -22,8 +22,6 @@ var main = function () {
                 var input_pass = $("<input>");
                 var pulsante = $("<button>").text("Login");
                 var pulsanteLogOut = $("<button>").text("Logout");
-
-                var user;
                 //#endregion
 
                 $.getJSON("/home", function(artisti){
@@ -87,30 +85,54 @@ var main = function () {
                  
                 });
                 
-            }else if ($element.parent().is(":nth-child(2)")) { // "Visualizza Testi" tab: Mostra tutti gli artisti e permette una ricerca per data in base alla disponibilità           
+            }else if ($element.parent().is(":nth-child(2)")) { // "Visualizza testi" tab:
                 $content = $("<p>");
+            
+                $.getJSON("/testi", function(testi) {
+            
+                    var testoCliccato = "";
 
-                $.getJSON("/testi", function(testi){
-
-                    //Se non si filtra appaiono tutti gli artisti nel DB
-                    testi.forEach(function(ris){
-
+                    testi.forEach(function(ris) {
+            
                         var giaStampati = [];
+            
+                        if (!giaStampati.includes(ris.isbn)) {
+                            var $newElement = $("<h4>").text(ris.titolo + "  Autore: " + ris.autori + "  Disponibili: " + ris.disponibilita + "  Prezzo: " + ris.prezzo + "€");
+            
+                            // Add a click event listener to the newly created element
+                            $newElement.click(function() {
 
-                        ris.disponibilita.forEach(function(ris1){
+                                if(testoCliccato == $newElement)
+                                {
+                                    //Gia è aperto questo
+                                }
+                                else
+                                {
+                                    if(testoCliccato != "") //Se avevi gia cliccato qualcosa lo rimuovo
+                                    {
+                                        $content.find('.riconoscimento').remove(); //La classe riconoscimento sta per questo infatti
+                                    }
 
-                            if(!giaStampati.includes(ris1.isbn)) //PROBLEMA forse va ris1?
-                            {
-                                $content.append($("<h4>").text( ris1.titolo+" |Autore: " + ris1.autore + " |Disponibili: " + ris1.disponibilita +" |Prezzo: " + ris1.prezzo + "€"));
-                                giaStampati.push(ris1.isbn); 
-                            }                      
-                        });
-                        
-                    });
-                    
-                    
-                });
+                                    // Handle click event
+                                    // Faccio apparire questi
+                                    var $testo = $("<h5>").text("Stai modificando la disponibilità di: " + ris.titolo).addClass("riconoscimento");
+                                    var $input = $("<input>").attr("type", "text").addClass("riconoscimento");
+                                    var $button_agg = $("<button>").text("Aggiungi").addClass("riconoscimento");
+                                    var $button_rim = $("<button>").text("Rimuovi").addClass("riconoscimento");
                 
+                                    // Append al content
+                                    $content.append($testo, $input, $button_agg, $button_rim);
+                                    testoCliccato = $newElement;
+                                }
+
+                            });
+            
+                            $content.append($newElement);
+                            giaStampati.push(ris.isbn);
+                        }
+                    });
+            
+                });
             }else if ($element.parent().is(":nth-child(3)")) { // "Modifica Testi" tab: Permette di aggiungere e rimuovere gli artisti
                 $content = $("<p>");
 
@@ -145,11 +167,11 @@ var main = function () {
                     $content.append(isbn_rim);
                     $content.append(pulsante_rimuovi.addClass("destraInput").addClass("sottoDestra"));
                     
-                    $content.append($("<h3>SBN del testo da aggiungere</h3>"));
+                    $content.append($("<h3>ISBN del testo da aggiungere</h3>"));
                     $content.append(isbn_agg);
                     $content.append($("<h3>Titolo</h3>"));
                     $content.append(titolo);
-                    $content.append($("<h3>autore/i</h3>"));
+                    $content.append($("<h3>Autore/i</h3>"));
                     $content.append(autori);
                     $content.append($("<h3>Editore</h3>"));
                     $content.append(editore);
@@ -157,7 +179,7 @@ var main = function () {
                     $content.append(genere);
                     $content.append($("<h3>Prezzo</h3>"));
                     $content.append(prezzo);
-                    $content.append($("<h3>disponibilità</h3>"));
+                    $content.append($("<h3>Disponibilità</h3>"));
                     $content.append(disponibilita);
 
                     $content.append($("<h3>Il testo è di tipo</h3>"));
@@ -166,7 +188,7 @@ var main = function () {
                     $content.append(tipo2.addClass("pocoSotto"));
                     $content.append(labeltipo2);
 
-                    $content.append(pulsante_aggiungi);
+                    $content.append(pulsante_aggiungi.addClass("destraInput"));
                     //#endregion
 
                     //Rimuove il testo in base all'isbn
@@ -177,9 +199,10 @@ var main = function () {
 
                     //Aggiunge un testo
                     pulsante_aggiungi.on("click", function(){
+
                         try {
                             var getTipo = document.querySelector("input[name='tipo']:checked").value;
-
+                            var titoloStampa = titolo.val()
                             //#region vincoli
                             /*if(getTipo == "SUMENTTRISTA")
                             {
@@ -210,6 +233,7 @@ var main = function () {
 
                             if(giaEsiste == false)
                             {
+
                                 aggiungi_testo(isbn_agg.val(), titolo.val(), autori.val(), editore.val(), genere.val(), prezzo.val(), disponibilita.val(), getTipo);
                             }
 
@@ -228,6 +252,9 @@ var main = function () {
                                 }
                             });
                             giaEsiste = true;
+
+                            
+                            $content.append($("<h5>").text("Testo aggiunto: " + titoloStampa))
 
                         } catch (error) {
                             alert("Seleziona qualcosa in ogni campo necessario");
@@ -465,11 +492,11 @@ var main = function () {
 
                 });
 
-
+            }
             $("main .content").append($content);
 
             return false;
-            }
+            
         });
     });
 

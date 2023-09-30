@@ -27,7 +27,8 @@ var TestiSchema = mongoose.Schema({
     editore: String,
     genere: String,
     prezzo: Number,
-	isbn: Number
+	isbn: Number,
+	disponibilita: Number
 });
 
 //Schema per gli Dipendenti
@@ -111,7 +112,7 @@ app.post("/testi", function(req, res){
 	console.log("post a /testi");
 
 	//Creo un nuovo artista e lo salvo nel DB
-	var nuovo_testo = new Testi({"id":++idD, "tipo":req.body.tipo, "titolo":req.body.titolo, "autori":req.body.autori, "editore":req.body.editore, "genere":req.body.genere, "prezzo":req.body.prezzo, "isbn":req.body.isbn});
+	var nuovo_testo = new Testi({"id":++idT, "tipo":req.body.tipo, "titolo":req.body.titolo, "autori":req.body.autori, "editore":req.body.editore, "genere":req.body.genere, "prezzo":req.body.prezzo, "isbn":req.body.isbn, "disponibilita":req.body.disponibilita});
 
 		nuovo_testo.save(function (err, result) {
 			if (err !== null) {
@@ -121,7 +122,7 @@ app.post("/testi", function(req, res){
 
 			} else {
 				
-				Dipendenti.find({}, function (err, result) {
+				Testi.find({}, function (err, result) {
 					
 					if (err !== null) {
 							
