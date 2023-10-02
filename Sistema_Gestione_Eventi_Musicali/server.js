@@ -135,6 +135,41 @@ app.post("/testi", function(req, res){
 			}
 		});
 });
+
+//put a /testi
+app.put("/testi", function (req, res) {
+	console.log("put a /testi");
+
+	var valore = req.body.val;
+	var aggiungi = req.body.aggiungi;
+
+	if(aggiungi == false)
+	{
+		valore = valore*(-1);
+	}
+
+	Testi.find({"id": req.body.iddi}, function (err, risultato) {
+		risultato.forEach(element => {
+			
+			//Aggiorno il numero nuovo e salvo
+			element.disponibilita = valore;
+
+			element.save(function (err) {
+				if (err){
+					console.log(err)
+					res.send("ERROR");
+				}
+				else{
+					console.log("NUMERO TESTI AGGIORNATI");
+				}
+				
+			});
+		});
+		
+		
+    });
+
+});
 /*
 //post a /addEvents
 app.post("/addEvents", function(req, res){
@@ -199,39 +234,6 @@ app.post("/home", function(req, res){
 			console.log("User o pass sbagliati");
 		}
 	});
-});
-
-//put a /artists
-app.put("/artists", function (req, res) {
-	console.log("put a /artists");
-
-	var giorniNuovi = req.body.giorni;
-	var iddi = req.body.iddi;
-	
-
-	Dipendenti.find({"id": iddi}, function (err, risultato) {
-		risultato.forEach(element => {
-			
-			//Aggiorno i giorni con i giorni nuovi e salvo
-			element.disponibilita = giorniNuovi;
-
-			//Per qualche motivo questa funzione è incredibilmente lenta, quindi per più salvataggi consecutivi
-			//potrebbe sembrare che non stia funzionando, ma in realtà ci mette un poco a salvare i cambiamenti consecutivi
-			element.save(function (err) {
-				if (err){
-					console.log(err)
-					res.send("ERROR");
-				}
-				else{
-					console.log("GIORNI AGGIORNATI");
-				}
-				
-			});
-		});
-		
-		
-    });
-
 });
 
 //delete a /editArtists

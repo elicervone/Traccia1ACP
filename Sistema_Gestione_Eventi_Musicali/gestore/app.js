@@ -116,13 +116,30 @@ var main = function () {
                                     // Handle click event
                                     // Faccio apparire questi
                                     var $testo = $("<h5>").text("Stai modificando la disponibilità di: " + ris.titolo).addClass("riconoscimento");
-                                    var $input = $("<input>").attr("type", "text").addClass("riconoscimento");
-                                    var $button_agg = $("<button>").text("Aggiungi").addClass("riconoscimento");
-                                    var $button_rim = $("<button>").text("Rimuovi").addClass("riconoscimento");
+                                    var $input = $("<input>").attr("type", "number").addClass("riconoscimento");
+                                    var $button_agg = $("<button>").text("Modifica").addClass("riconoscimento");
                 
                                     // Append al content
-                                    $content.append($testo, $input, $button_agg, $button_rim);
+                                    $content.append($testo, $input, $button_agg);
                                     testoCliccato = $newElement;
+
+                                    $button_agg.on("click", function(){
+                        
+                                        if($input.val() >= 0)
+                                        {
+                                            modificaDisponibilita($input.val(), ris.isbn);
+                                            var $testoOperazione = $("<h5>").text("Operazione avvenuta con successo").addClass("riconoscimento");
+                                            $content.append($testoOperazione);
+                                        }
+                                        else
+                                        {
+                                            alert("Inserisci un valore positivo")
+                                        }
+                                        
+                                        $input.val("");
+                                       
+                                    });
+
                                 }
 
                             });
@@ -201,6 +218,7 @@ var main = function () {
                     pulsante_aggiungi.on("click", function(){
 
                         try {
+                            giaEsiste = false;
                             var getTipo = document.querySelector("input[name='tipo']:checked").value;
                             var titoloStampa = titolo.val()
                             //#region vincoli
@@ -235,6 +253,12 @@ var main = function () {
                             {
 
                                 aggiungi_testo(isbn_agg.val(), titolo.val(), autori.val(), editore.val(), genere.val(), prezzo.val(), disponibilita.val(), getTipo);
+                                $content.append($("<h5>").text("Testo aggiunto: " + titoloStampa))
+                            }
+                            else
+                            {
+                                alert("Il testo è gia presente nel database");
+                                return;
                             }
 
                             // Trova tutti gli <input> 
@@ -251,10 +275,9 @@ var main = function () {
                                     input.value = "";
                                 }
                             });
-                            giaEsiste = true;
 
                             
-                            $content.append($("<h5>").text("Testo aggiunto: " + titoloStampa))
+                            
 
                         } catch (error) {
                             alert("Seleziona qualcosa in ogni campo necessario");
@@ -269,15 +292,15 @@ var main = function () {
                 $content = $("<p>");
 
                 $.getJSON("/dipendenti", function(eventi){
-                    
+                    /*
                     eventi.forEach(function(ris){
 
                         $content.append($("<h4>").text(ris.tipo+" in " + ris.location + " il giorno " + ris.giorno));//Eh lo so esce la data completa (ma davvero completa)
-                    });
+                    });*/
                 });
 
             }else if($element.parent().is(":nth-child(5)")) { // "Aggiungi Eventi" tab: Permette di aggiungere degli eventi
-                $content = $("<p>");
+               /* $content = $("<p>");
 
                 //#region variabili
                 var somma = 0;
@@ -491,7 +514,7 @@ var main = function () {
                     });
 
                 });
-
+                */
             }
             $("main .content").append($content);
 
@@ -665,36 +688,36 @@ var main = function () {
 
     }; 
 
-    var aggiungiGiorno = function(giorno, user) {
-        $.getJSON("/artists", function(artisti) {
-            var risultato = [];
+    var modificaDisponibilita = function(valore, isbn_attuale) {
+        $.getJSON("/testi", function(testi) {
+            var risultato;
             var id;
-            var bool = false;
+            var trovato = false;
     
-            //Prendo tutti gli artisti, seleziono quello loggato con l'username e sovrascrivo i giorni
-            artisti.forEach(function(artista) {
-                if (artista.username === user) {
-                    risultato = artista.disponibilita;
-                    risultato.push(giorno);
-                    id = artista.id;
-
-                    bool = true;
+            //Prendo tutti i testi, seleziono quello giusto e sovrascrivo il numero
+            testi.forEach(function(testo) {
+                if (testo.isbn === isbn_attuale) {
+                    risultato = testo.disponibilita;
+                    id = testo.id;
+                    trovato = true;
                 }
             });
 
-            if(bool)
+            if(trovato)
             {
-                var risposta = {iddi: id, giorni:risultato};
+                
+                var risposta = {iddi: id, val: Number(valore)};
+                console.log(risposta)
             }
             else
             {
-                var risposta = {iddi: id, giorni:""};
+                return;
             }
            
             //put per sovrascrivere i giorni
             $.ajax({
         
-                url: '/artists',
+                url: '/testi',
                 type:'PUT',
                 data: risposta,
                 success: function(result){
