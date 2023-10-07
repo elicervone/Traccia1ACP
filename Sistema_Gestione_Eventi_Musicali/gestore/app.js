@@ -210,7 +210,7 @@ var main = function () {
 
                     //Rimuove il testo in base all'isbn
                     pulsante_rimuovi.on("click", function(){
-                        rimuovi_artista(isbn_rim.val());
+                        rimuovi_testo(isbn_rim.val());
                         isbn_rim.val("");
                     });
 
@@ -222,21 +222,6 @@ var main = function () {
                             var getTipo = document.querySelector("input[name='tipo']:checked").value;
                             var titoloStampa = titolo.val()
                             //#region vincoli
-                            /*if(getTipo == "SUMENTTRISTA")
-                            {
-                                if(getGenere != "null" || getRegistro != "null")
-                                {
-                                    alert("Lo strumentista non può avere un genere o un registro");
-                                    return;
-                                }
-
-                                if(strumento1.val() == "" && strumento2.val() == "" && strumento3.val() == "" && strumento4.val() == "")
-                                {
-                                    alert("Lo strumentista deve avere almeno uno strumento");
-                                    return;
-                                }
-                            }*/
-
                             ris.forEach(element => {
                                 console.log(element.isbn)
                                 console.log(isbn_agg.val())
@@ -582,33 +567,32 @@ var main = function () {
 
     };
 
-    var rimuovi_artista = function(isbn_rim){
+    var rimuovi_testo = function(isbn_rim){
         
-        var artista;
+        var testo;
             
         if (isbn_rim != ""){
 
-            $.getJSON("/editArtists", function (element){
+            $.getJSON("/testi", function (element){
 
                 var k = false;
                 element.forEach(e => {
-                    if(e.username == isbn_rim)
+                    if(e.isbn == isbn_rim)
                     {
-                        console.log("trovato" + e.username);
-                        artista = {"id":-99, "username":isbn_rim};
+                        console.log("trovato" + e.titolo);
+                        testo = {"id":-99, "isbn":isbn_rim};
 
-                        //rip :skullemoji:
                         $.ajax({
         
-                            url: '/editArtists',
+                            url: '/testi',
                             type:'DELETE',
-                            data: artista,
+                            data: testo,
                             success: function(result){
                                 console.log(result);
                             }
                         });
                         k = true;
-                        alert("Artista eliminato");
+                        alert("testo eliminato");
                         return;
                     }
                 });
@@ -619,7 +603,7 @@ var main = function () {
                 }
                 else
                 {
-                    alert("L'artista non è presente nel DB");
+                    alert("Il testo non è presente nel DB");
                 }
             });
 
@@ -630,63 +614,6 @@ var main = function () {
         }
 
     };
-
-    var aggiungiPartecipante = function(userPartecipante, callback) {
-        $.getJSON("/artists", function(artisti) {
-            var risultato = null;
-    
-            //Per aggiungere un partecipante prendo tutti gli artisti ne metto le cose importanti in "risultato"
-            artisti.forEach(function(artista) {
-                if (artista.username === userPartecipante) {
-                    risultato = { id: artista._id, nome: artista.nome, cognome: artista.cognome, paga: artista.cachet, tipo: artista.tipo };
-                }
-            });
-    
-            //se risultato non è vuoto, allora lo ritorno con una callback
-            if (risultato !== null) {
-                console.log("Trovato il partecipante");
-                console.log(risultato);
-                callback(risultato);
-            } else {
-                console.log("NON trovato il partecipante");
-                callback(false);
-            }
-        });
-    };
-
-    var aggiungiEvento = function(getTipo, giorno, location, costo ,partecipanti){
-        
-        var evento;
-            
-        if (giorno!="" && location!=="" && partecipanti.length > 0){
-
-            var evento;
-            var iddi = [];
-
-            //vettore di id di partecipanti (tante I e tante D)
-            partecipanti.forEach(element => {
-                iddi.push(element.id);
-            });
-
-            $.getJSON("/addEvents", function (element){
-
-                evento = {"id":-1, "tipo":getTipo, "giorno":giorno, "location":location, "costoTotale":costo, "partecipanti":iddi};
-
-                //post per aggiungere l'eneto
-                $.post("/addEvents", evento, function (result) {
-
-                    console.log(result);
-
-                });
-                
-            });
-
-        } else {
-
-            alert("Seleziona qualcosa in ogni campo necessario");
-        }
-
-    }; 
 
     var modificaDisponibilita = function(valore, isbn_attuale) {
         $.getJSON("/testi", function(testi) {

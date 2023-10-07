@@ -170,78 +170,13 @@ app.put("/testi", function (req, res) {
     });
 
 });
-/*
-//post a /addEvents
-app.post("/addEvents", function(req, res){
-	console.log("post a /addEvents");
-	
-	//Creo un nuovo evento e lo salvo nel DB
-	var newEvent = new Testi({"id":++idT,  "tipo":req.body.tipo, "giorno":req.body.giorno, "location":req.body.location, "costo":req.body.costoTotale, "partecipanti":req.body.partecipanti});
 
-	newEvent.save(function (err, result) {
-		if (err !== null) {
-			
-			console.log(err);
-			res.send("ERROR1");
-
-		} else {
-			
-			Testi.find({}, function (err, result) {
-				
-				if (err !== null) {
-			    		
-					console.log(err);
-			    	res.send("ERROR2");
-				}
-			
-				res.json(result);
-			});
-		}
-	});
-});
-
-//post a /home
-app.post("/home", function(req, res){
-	console.log("post a /home");
-
-	var datiUser = req.body.user;
-	var datiPass = req.body.pass;
-	
-	//Cerco negli Dipendenti in base all'user e controllo la password (dovrebbe essere criptata come abbiamo fatto per ingegneria del soft.)
-	Dipendenti.find({"username": datiUser},function(err, ris){
-		
-		var trovato = false;
-
-		if(err != null)
-		{
-			console.log(err);
-		}
-		ris.forEach(element => {
-			
-			//Trovato
-			if(element.password == datiPass && trovato == false)
-			{
-				res.send("OK");
-				trovato = true;
-				console.log("Trovata una corrispondenza");
-			}
-		});
-		
-		//Non trovato
-		if(trovato == false)
-		{
-			res.send("ERRORE");
-			console.log("User o pass sbagliati");
-		}
-	});
-});
-
-//delete a /editArtists
-app.delete("/editArtists", function(req, res){
-	console.log("delete a /editArtists");
+//delete a /testi
+app.delete("/testi", function(req, res){
+	console.log("delete a /testi");
 
 	//Rimuovo un artista filtrato con l'username
-	Dipendenti.find({"username": req.body.username}, function (err, risultato) {
+	Testi.find({"isbn": req.body.isbn}, function (err, risultato) {
 		risultato.forEach(element => {
 			
 			element.deleteOne(function (err) {
@@ -250,11 +185,11 @@ app.delete("/editArtists", function(req, res){
 					res.send("ERROR3");
 				}
 				else{
-					console.log("ARTISTA ELIMINATO");
+					console.log("TESTO ELIMINATO");
 					res.send(risultato);
 				}
 				
 			});
 		});	
 	});
-});*/
+});
