@@ -31,34 +31,8 @@ var TestiSchema = mongoose.Schema({
 	disponibilita: Number
 });
 
-//Schema per gli Dipendenti
-var DipendentiSchema = mongoose.Schema({    
-    id: Number,
-
-	nome: String,
-	cognome: String,
-
-	username: String,
-	password: String,
-});
-
 //Inizializzo i modelli
-var Dipendenti = mongoose.model("Dipendenti", DipendentiSchema);
 var Testi = mongoose.model("Testi", TestiSchema);
-
-//Trovo gli id minori, saranno il punto di partenza per gli id futuri
-Dipendenti.find({}, function (err, result){
-
-	var max = -1;
-	result.forEach(element => {
-		if (element.id > max)
-			max = element.id;
-	});
-
-	idD = max;
-	console.log("MAX Dipendenti = " + max);
-
-});
 
 //Trovo gli id minori, saranno il punto di partenza per gli id futuri
 Testi.find({}, function (err, result){
@@ -83,10 +57,6 @@ http.createServer(app).listen(3000);
 //get a /home
 app.get("/home", function(req, res){
 	console.log("get a /home");
-	
-	Dipendenti.find(function(err, ris){//query generica per tutti i Dipendenti
-		res.json(ris);
-	});
 });
 
 //get a /testi
@@ -94,15 +64,6 @@ app.get("/testi", function(req, res){
 	console.log("get a /testi");
 
 	Testi.find(function(err, ris){//query generica per tutti i Testi
-		res.json(ris);
-	});
-});
-
-//get a /dipendenti
-app.get("/dipendenti", function(req, res){
-	console.log("get a /dipendenti");
-
-	Dipendenti.find(function(err, ris){//query generica per tutti i Dipendenti
 		res.json(ris);
 	});
 });
@@ -141,14 +102,8 @@ app.put("/testi", function (req, res) {
 	console.log("put a /testi");
 
 	var valore = req.body.val;
-	var aggiungi = req.body.aggiungi;
 
-	if(aggiungi == false)
-	{
-		valore = valore*(-1);
-	}
-
-	Testi.find({"id": req.body.iddi}, function (err, risultato) {
+	Testi.find({"isbn": req.body.isbn}, function (err, risultato) {
 		risultato.forEach(element => {
 			
 			//Aggiorno il numero nuovo e salvo
